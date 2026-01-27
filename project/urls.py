@@ -17,12 +17,12 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include  
-from test.views import *
+from cook.views import *
 from project import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', include('test.urls')),
+    path('cook/', include('cook.urls')),
 
 ]
 if settings.DEBUG:
