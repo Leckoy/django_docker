@@ -3,5 +3,6 @@ from .views import *
 
 urlpatterns = [
 path("", index),
-path("zzzzz", index),
+path("about/", about),
+path("Github/", copy),
 ]

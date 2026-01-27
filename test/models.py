@@ -1,6 +1,6 @@
 from django.db import models
 
-class Products(models.Model):
+class products(models.Model):
 	title = models.TextField()
 	count = models.IntegerField()
 
