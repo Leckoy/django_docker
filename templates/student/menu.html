@@ -1,0 +1,12 @@
+{% extends "base/base_student.html" %}
+{% load static %}
+
+{% block main%}
+{% for dish in dishes %}
+<h1>{{dish.title}}</h1>
+{% endfor %}
+
+<a href="{% url 'pay_page' %}"><button type="button" >Оплатить</button></a>
+<a href="{% url 'main_page' %}"><button type="button" >Главная</button>
+
+{% endblock%}
