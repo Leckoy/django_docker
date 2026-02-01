@@ -1,13 +1,13 @@
 from django.shortcuts import render 
 from django.http import HttpResponse 
-from .models import products,dishes
+from .models import Ingredient,Dish
 
 def fproducts(request):
-	product = products.objects.all()
-	return render(request, "cook/products.html", {"product": product})
+	products = Ingredient.objects.all()
+	return render(request, "cook/products.html", {"products": products})
 
 def fdishes(request):
-	dish = dishes.objects.all()
+	dish = Dish.objects.all()
 	return render(request, "cook/products.html", {"product": dish})
 
 
