@@ -1,10 +1,13 @@
 {% extends "base/base_student.html" %}
+{% load static %}
 
-{% block main%}
-<h1> Hi</h1>
-<a href="{% url 'menu_page' %}"><button type="button" >Меню</button>
-{% endblock%}</a>
+{% block main %}
+  <h1>Hi</h1>
+  <a href="{% url 'menu_page' %}">
+    <button type="button">Меню</button>
+  </a>
+{% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'student/js/index.js' %}" defer></script>
+  <script src="{% static 'student/js/index.js' %}" defer></script>
 {% endblock %}
