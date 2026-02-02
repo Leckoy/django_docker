@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Role(models.Model):
     title = models.CharField(max_length=50, verbose_name="роль")
 
@@ -15,13 +16,6 @@ class User(models.Model):
     def str(self):
         return self.name
 
-class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
-    money = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    student_class = models.CharField(max_length=50, db_column='class')
-
-    def str(self):
-        return f"{self.user.name} ({self.student_class}) — {self.money} руб."
 
 class Ingredient(models.Model):
     title = models.CharField(max_length=255)
@@ -65,25 +59,8 @@ class Menu(models.Model):
     def str(self):
         return f"Меню на {self.date} ({self.food_intake})"
 
-class Purchases(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    deposited_money = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
-    date_of_meal = models.DateField()
-    attendance = models.BooleanField(default=False)
-    food_intake = models.CharField(max_length=50)
-    type_of_purchase = models.CharField(max_length=50)
-    
-    def str(self):
-        return f"Чек №{self.id} — {self.student.user.name}"
 
-class Allergy(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('student', 'ingredient')
 
 class Stock(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
@@ -112,7 +89,7 @@ class Order(models.Model):
         return f"Заказ: {self.ingredient.title} ({self.status})"
 
 class Review(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey('student.Student', on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     comment = models.TextField()
     mark = models.PositiveSmallIntegerField()
