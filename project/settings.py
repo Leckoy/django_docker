@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cook',
     'student',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

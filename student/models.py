@@ -12,7 +12,7 @@ class Purchases(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     menu = models.ForeignKey('cook.Menu', on_delete=models.CASCADE)
     deposited_money = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True,null=True)
     date_of_meal = models.DateField()
     attendance = models.BooleanField(default=False)
     food_intake = models.CharField(max_length=50)

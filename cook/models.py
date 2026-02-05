@@ -64,8 +64,8 @@ class Menu(models.Model):
 
 class Stock(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
-    date = models.DateField()
-    expiration_date = models.DateField()
+    date = models.DateField(auto_now_add=True,null=True)
+    expiration_date = models.DateField(auto_now_add=True,null=True)
     amount_cooked = models.PositiveIntegerField()
     amount_sold = models.PositiveIntegerField()
     
