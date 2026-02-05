@@ -1,6 +1,233 @@
-{% extends "base/base_main.html" %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2D6A4F;
+            --accent-orange: #FF8C00;
+            --text-dark: #1B4332;
+            --text-gray: #6B7280;
+            --bg-white: #FFFFFF;
+            --input-border: #D1D5DB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
 
-{% block main %}
-<h1>It's empty now</h1>
-{% endblock %}
+        /* The main div */
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+        
+        }
+
+
+        body {
+            background: url('https://img.freepik.com/premium-photo/photo-school-canteen-scene_931878-1093.jpg?w=2000') no-repeat center center;
+            /* background-size: cover; */
+            /* position: relative; */ 
+            background-size: cover; /* Scale image to cover entire area */
+            background-repeat: no-repeat; /* Prevent tiling */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Keep image fixed when scrolling */
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Center form */
+        .form-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background-color: #f9fafb;
+            border: 2px solid #333; 
+            border-radius: 25px; 
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 400px;
+        }
+
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-green);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            color: var(--text-gray);
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .form-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        .forgot-password {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+.login-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #e67e00;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .register-link a {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error {
+            color: red;
+        }
+        /* Адаптивность для мобильных */
+        @media (max-width: 850px) {
+            .image-back {
+                display: none;
+            }
+            .form-center {
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="image-back">
+            <div class="image-overlay">
+                <h2>Свежие ингредиенты каждый день</h2>
+                <p>Заказывайте обед за пару кликов</p>
+            </div>
+        </div>
+    <div class="login-container">
+    
+
+        <div class="form-center">
+            <div class="form-wrapper">
+
+                <h1>С возвращением!</h1>
+                <p class="subtitle">Войдите, чтобы заказать вкусный обед.</p>
+
+                <form action="/login" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ .csrfToken }}">
+                    <div class="input-group">
+                        <label>Логин</label>
+                        <input type="login" name="login">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Пароль</label>
+                        <input id="password" type="password" name="password" placeholder="••••••••" required>
+                    </div>
+                    {{if .reason}}
+                    <p class="error">reason: {{.reason}}</p>
+                    {{end}}
+                    <div class="form-options">
+                        <label>
+                            <input type="checkbox"> Запомнить меня
+                        </label>
+                        <a href="#" class="forgot-password">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">Войти</button>
+                </form>
+
+                <div class="register-link">
+                    Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>

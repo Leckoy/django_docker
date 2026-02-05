@@ -4,7 +4,8 @@ from cook.models import Dish
 # from cook.models import dishes
 
 def index(request: HttpRequest) -> HttpResponse:
-    return render(request, "student/index.html")
+    context = {"title": "Главная страница"}
+    return render(request, "student/index.html", context)
 
 def menu(request: HttpRequest) -> HttpResponse:
     context = {"dishes" : Dish.objects.all()}

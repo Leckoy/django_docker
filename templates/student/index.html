@@ -1,21 +1,68 @@
 {% extends "base/base_student.html" %}
-{% load static %}
 
+{% block header %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+{% endblock  %}
 {% block main %}
 
-  <a href="{% url 'menu_page' %}">
-    <button type="submit">Меню</button>
-  </a>
+<nav class="navbar bg-primary bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
+    <div class="container-fluid justify-content-end">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-person-circle fs-5 me-2"></i>
+            <span class="fw-bold">Александр Иванов</span>
+        </div>
+    </div>
+</nav>
 
-  <a href="{% url 'allergy_page' %}">
-    <button type="submit">Аллергии</button>
-  </a>
+<div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Меню</h5>
+        <p class="card-text">Здесь вы можете ознакомиться с меню</p>
+        <a href="{% url 'menu_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Аллергии</h5>
+        <p class="card-text">Если у вас есть аллергии на какие-то продукты, пожалуйста напишите нам</p>
+        <a href="{% url 'allergy_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Абонимент</h5>
+        <p class="card-text">Здесь вы можете выбрать абонимент</p>
+        <a href="{% url 'season_ticket_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Разовая оплата</h5>
+        <p class="card-text">Здесь вы можете оплатить сегодняшний прием пищи</p>
+        <a href="{% url 'pay_onetime_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <a href="{% url 'season_ticket_page' %}">
-      <button type="submit">Абонимент</button>
-  </a>
+<div class="row mt-5 mb-5"> 
+    <div class="col-12 text-center">
+        <h3 class="mb-4">Всё готово к оформлению</h3> 
+        <button type="button" class="btn btn-success btn-lg px-5 py-3 fw-bold">
+            <i class="bi bi-cart-check me-2"></i>
+            Оформить заказ
+        </button>
+    </div>
+</div>
 
-  <a href="{% url 'pay_onetime_page' %}">
-      <button type="submit">Разовая оплата</button>
-  </a>
 {% endblock %}
