@@ -2,12 +2,20 @@
 {% load static %}
 
 {% block main %}
-  <h1>Hi</h1>
-  <a href="{% url 'menu_page' %}">
-    <button type="button">Меню</button>
-  </a>
-{% endblock %}
 
-{% block extra_js %}
-  <script src="{% static 'student/js/index.js' %}" defer></script>
+  <a href="{% url 'menu_page' %}">
+    <button type="submit">Меню</button>
+  </a>
+
+  <a href="{% url 'allergy_page' %}">
+    <button type="submit">Аллергии</button>
+  </a>
+
+  <a href="{% url 'season_ticket_page' %}">
+      <button type="submit">Абонимент</button>
+  </a>
+
+  <a href="{% url 'pay_onetime_page' %}">
+      <button type="submit">Разовая оплата</button>
+  </a>
 {% endblock %}
