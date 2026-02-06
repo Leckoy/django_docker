@@ -1,0 +1,19 @@
+{% extends "base/base_student.html" %}
+{% load static %}
+
+{% block main %}
+    <form method="post" action="{% url "main_page" %}">
+        {% csrf_token %}
+        <select id="season_ticket" name="season_ticket">
+            <option value="7_days">7 дней</option>
+            <option value="30_days">30 дней</option>
+            <option value="90_mounth">90 дней</option>
+        </select>
+
+        <button type="submit" id="pay-button"> Оплатить </button>
+    </form>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'student/js/season_ticket.js' %}" defer></script>
+{% endblock %}

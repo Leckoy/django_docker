@@ -23,7 +23,8 @@ from project import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cook/', include('cook.urls')),
-	path("student/", include("student.urls"))
+	path("student/", include("student.urls")),
+	path("start/", include("main.urls"))
 
 ]
 if settings.DEBUG:

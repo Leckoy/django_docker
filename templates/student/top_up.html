@@ -1,0 +1,12 @@
+{% extends "base/base_student.html" %}
+{% load static %}
+
+{% block main %}
+    <form method="post" action="index.html">
+        {% csrf_token %}
+        <label for="top_up">Введите сумму пополнения</label>
+        <input type="number" id="top_up" name="top_up" min="10" max="10000" />
+        <button type="submit" id="top_up-button"> Отправить </button>
+    </form>
+
+{% endblock %}
