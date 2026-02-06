@@ -21,6 +21,7 @@ from cook.views import *
 from project import settings
 
 urlpatterns = [
+	path("", home, name="home"),
     path('admin/', admin.site.urls),
     path('cook/', include('cook.urls')),
 	path("student/", include("student.urls")),
