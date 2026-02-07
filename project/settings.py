@@ -130,3 +130,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"), 
 ]
 AUTH_USER_MODEL = 'main.User'
+
+LOGIN_URL = 'http://localhost:8000/start/registration/'

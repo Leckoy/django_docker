@@ -7,8 +7,9 @@ from .serializers import IngredientSerializer, DishSerializer
 from rest_framework.response import Response
 from rest_framework import status             
 from django.utils import timezone
+from main.decorators import role_required
 
-
+@role_required('cook')
 class IngredientUseAPI(generics.RetrieveUpdateAPIView):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer

@@ -29,6 +29,18 @@ class UserRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, (forms.Select, forms.SelectMultiple)):
+                field.widget.attrs['class'] = 'form-select'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+            if field_name == 'password1':
+                field.widget.attrs['class'] += ' password-field'
 
 class LoginForm(forms.Form):
     login = forms.CharField(label="Login", max_length=100)
@@ -45,3 +57,12 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError("Invalid login or password")
             cleaned_data["user"] = user
         return cleaned_data
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+            if field_name == 'password':
+                field.widget.attrs['class'] += ' password-field'

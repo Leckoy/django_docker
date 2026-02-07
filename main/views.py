@@ -6,10 +6,6 @@ from .forms import LoginForm
 from .forms import UserRegistrationForm
 
 
-def choice(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "main/choice.html", context)
-
 def registration(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
@@ -20,9 +16,6 @@ def registration(request):
     else:
         form = UserRegistrationForm()
     return render(request, "main/registration.html", {"form": form})
-def authorization(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "main/authorization.html", context)
 
 def user_login(request):
     if request.method == "POST":
@@ -33,10 +26,11 @@ def user_login(request):
             return redirect("home")  
     else:
         form = LoginForm()
-    return render(request, "main/authorization.html", {"form": form})
+    return render(request, "main/login.html", {"form": form})
 
 def user_logout(request):
     logout(request)
     return redirect("home")
+
 def home(request):
     return render(request, "main/home.html")
