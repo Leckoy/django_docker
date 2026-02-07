@@ -1,7 +1,7 @@
 from django import forms
 from .models import User, Role
 from django.contrib.auth import authenticate
-
+from student.models import Student
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
         label="Password",
@@ -25,10 +25,16 @@ class UserRegistrationForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])  # hash password
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
+            if user.role_id == 2: 
+                Student.objects.create(
+                    user=user,
+                    money=0
+                )
         return user
+
 
 class LoginForm(forms.Form):
     login = forms.CharField(label="Login", max_length=100)
