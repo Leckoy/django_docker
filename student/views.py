@@ -1,8 +1,17 @@
-from django.shortcuts import render
+from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
-from cook.models import Dish
+from cook.models import Dish, Menu, Stock
 from main.decorators import role_required
 # from cook.models import dishes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
+from django.db import transaction
+from .models import Student, Purchases, Allergy
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import StudentOrderForm
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -21,9 +30,9 @@ def top_up(request: HttpRequest) -> HttpResponse:
     context = {}
     return render(request, "student/top_up.html", context)
 
-def pay_onetime(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/pay_onetime.html", context)
+#def pay_onetime(request: HttpRequest) -> HttpResponse:
+    #context = {}
+   # return render(request, "student/pay_onetime.html", context)
 
 def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}
@@ -32,3 +41,76 @@ def season_ticket(request: HttpRequest) -> HttpResponse:
 def comment(request: HttpRequest) -> HttpResponse:
     context = {}
     return render(request, "student/comment.html", context)
+
+
+
+
+
+def pay_onetime(request: HttpRequest) -> HttpResponse:
+    context = {}
+
+    student = request.user.student_profile
+    
+    if request.method == 'POST':
+        form = StudentOrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            chosen_date = form.cleaned_data.get('date_of_meal')
+            print(chosen_date)
+            menu_for_day = Menu.objects.filter(date=chosen_date).first()
+            order.menu_id = menu_for_day.id
+            price = menu_for_day.dish1.cost + menu_for_day.dish2.cost + menu_for_day.dish3.cost + menu_for_day.dish4.cost +menu_for_day.dish5.cost
+
+
+            if student.money < price:
+                messages.error(request, "У вас недостаточно денег на балансе!")
+            else:
+                with transaction.atomic():
+                    student.money -= price
+                    student.save()
+                    
+                    order.student = student
+                    order.deposited_money = price
+                    order.type_of_purchase = "Баланс"
+
+                    order.save()
+
+                    
+                    messages.success(request, f"Заказ на {order.food_intake} успешно оформлен!")
+                    return redirect('main_page') 
+    else:
+        form = StudentOrderForm()
+
+    return render(request, 'student/pay_onetime.html', {
+        'form': form,
+        'balance': student.money
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
