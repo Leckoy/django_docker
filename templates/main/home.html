@@ -10,17 +10,16 @@
         <p>Hello, {{ user.name }} (Role: {{ user.role.title }})</p>
         <p><a href="{% url 'logout' %}">Logout</a></p>
 
-        {% if user.role.title == "Admin" %}
-            <p><a href="{% url 'admin_panel' %}">Go to Admin Panel</a></p>
-        {% elif user.role.title == "Cook" %}
-            <p><a href="{% url 'cook_dashboard' %}">Go to Cook Dashboard</a></p>
+    
+        {% if user.role.title == "Cook" %}
+            <p><a href="{% url 'cook-dashboard' %}">Go to Cook Dashboard</a></p>
         {% elif user.role.title == "Student" %}
-            <p><a href="{% url 'student_dashboard' %}">Go to Student Dashboard</a></p>
+            <p><a href="{% url 'main_page' %}">Go to Student Dashboard</a></p>
         {% endif %}
 
     {% else %}
         <p>You are not logged in.</p>
-        <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a></p>
+        <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'registration_page' %}">Register</a></p>
     {% endif %}
 </body>
 </html>

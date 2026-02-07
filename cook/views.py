@@ -101,6 +101,4 @@ def index(request):
 	return render(request, "cook/index.html")
 def copy(request):
 	return render(request, "cook/copy.html")
-def home(request):
-    return render(request, "main/home.html")
 # Create your views here.
