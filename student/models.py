@@ -1,7 +1,7 @@
 from django.db import models
 
 class Student(models.Model):
-    user = models.OneToOneField('cook.User', on_delete=models.CASCADE, related_name="student_profile")
+    user = models.OneToOneField('main.User', on_delete=models.CASCADE, related_name="student_profile")
     money = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     student_class = models.CharField(max_length=50, db_column='class')
 

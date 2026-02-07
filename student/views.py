@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from cook.models import Dish
+from main.decorators import role_required
 # from cook.models import dishes
 
+@role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
     context = {"title": "Главная страница"}
     return render(request, "student/index.html", context)

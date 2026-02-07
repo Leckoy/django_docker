@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Home Page</h1>
+
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.name }} (Role: {{ user.role.title }})</p>
+        <p><a href="{% url 'logout' %}">Logout</a></p>
+
+    
+        {% if user.role.title == "Cook" %}
+            <p><a href="{% url 'cook-dashboard' %}">Go to Cook Dashboard</a></p>
+        {% elif user.role.title == "Student" %}
+            <p><a href="{% url 'main_page' %}">Go to Student Dashboard</a></p>
+        {% endif %}
+
+    {% else %}
+        <p>You are not logged in.</p>
+        <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'registration_page' %}">Register</a></p>
+    {% endif %}
+</body>
+</html>

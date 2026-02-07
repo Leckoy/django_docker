@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'cook',
     'student',
     'rest_framework',
+    'main',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"), 
 ]
+AUTH_USER_MODEL = 'main.User'

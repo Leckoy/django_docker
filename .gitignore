@@ -23,6 +23,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/Kate
 # C extensions
 *.so
 

@@ -1,20 +1,5 @@
 from django.db import models
-
-
-class Role(models.Model):
-    title = models.CharField(max_length=50, verbose_name="роль")
-
-    def str(self):
-        return self.title
-
-class User(models.Model):
-    name = models.CharField(max_length=255, verbose_name="ФИО пользователя")
-    login = models.CharField(max_length=100, unique=True)
-    password_hash = models.CharField(max_length=255)
-    role = models.ForeignKey(Role, on_delete=models.PROTECT, related_name="users")
-
-    def str(self):
-        return self.name
+from main.models import User
 
 
 class Ingredient(models.Model):
