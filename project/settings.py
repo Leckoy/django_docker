@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'cook',
     'student',
     'rest_framework',
-    'main'
+    'main',
 ]
 
 MIDDLEWARE = [
