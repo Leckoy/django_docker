@@ -7,7 +7,7 @@ class Ingredient(models.Model):
     amount = models.FloatField(default=0)
     picture = models.ImageField(upload_to="pictures/ingredients", null=True, blank=True)
 
-    def str(self):
+    def __str__(self):
         return f"{self.title} — {self.amount} г"
 
 class Dish(models.Model):
@@ -23,7 +23,7 @@ class Dish(models.Model):
         related_name="dishes"
     )
 
-    def str(self):
+    def __str__(self):
         return self.title
 
 class Composition(models.Model):
@@ -41,8 +41,9 @@ class Menu(models.Model):
     dish4 = models.ForeignKey(Dish, on_delete=models.SET_NULL, null=True, related_name="menu_pos4")
     dish5 = models.ForeignKey(Dish, on_delete=models.SET_NULL, null=True, related_name="menu_pos5")
 
-    def str(self):
+    def __str__(self):
         return f"Меню на {self.date} ({self.food_intake})"
+        return self.name
 
 
 
@@ -54,12 +55,12 @@ class Stock(models.Model):
     amount_cooked = models.PositiveIntegerField()
     amount_sold = models.PositiveIntegerField()
     
-    def str(self):
+    def __str__(self):
         return f"{self.dish.title} от {self.date}"
 class OrderStatus(models.Model):
     description = models.CharField(max_length=255)
     
-    def str(self):
+    def __str__(self):
         return self.description
 
 class Order(models.Model):
@@ -69,7 +70,7 @@ class Order(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.ForeignKey(OrderStatus, on_delete=models.PROTECT)
 
-    def str(self):
+    def __str__(self):
 
         return f"Заказ: {self.ingredient.title} ({self.status})"
 
@@ -80,5 +81,5 @@ class Review(models.Model):
     mark = models.PositiveSmallIntegerField()
     date = models.DateField(auto_now_add=True)
     
-    def str(self):
+    def __str__(self):
         return f"Отзыв от {self.student.user.name}"

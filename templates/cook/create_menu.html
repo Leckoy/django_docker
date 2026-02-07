@@ -1,0 +1,74 @@
+{% extends 'base/base_cook.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0 text-center">👨‍🍳 Составление меню на день</h3>
+                </div>
+                <div class="card-body">
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ form.date.label }}</label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                <div class="text-danger small">{{ form.date.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ form.food_intake.label }}</label>
+                                {{ form.food_intake }}
+                                {% if form.food_intake.errors %}
+                                <div class="text-danger small">{{ form.food_intake.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h5 class="text-muted mb-3">Выберите блюда для меню:</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Первое блюдо (dish1)</label>
+                            {{ form.dish1 }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Второе блюдо (dish2)</label>
+                            {{ form.dish2 }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Гарнир / Салат (dish3)</label>
+                            {{ form.dish3 }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Десерт (dish4)</label>
+                            {{ form.dish4 }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary">Напиток (dish5)</label>
+                            {{ form.dish5 }}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                ✅ Опубликовать меню
+                            </button>
+                            <a href="{% url 'main_page' %}" class="btn btn-outline-secondary">Отмена</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

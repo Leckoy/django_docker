@@ -56,7 +56,6 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             order = form.save(commit=False)
             chosen_date = form.cleaned_data.get('date_of_meal')
-            print(chosen_date)
             menu_for_day = Menu.objects.filter(date=chosen_date).first()
             order.menu_id = menu_for_day.id
             price = menu_for_day.dish1.cost + menu_for_day.dish2.cost + menu_for_day.dish3.cost + menu_for_day.dish4.cost +menu_for_day.dish5.cost
