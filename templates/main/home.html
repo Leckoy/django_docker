@@ -18,7 +18,7 @@
                     
                         <div class="d-grid gap-3 mt-4">
                             {% if user.role.title == "cook" %}
-                                <a href="{% url 'create_menu' %}" class="btn btn-primary btn-lg">
+                                <a href="{% url 'main_cook_page' %}" class="btn btn-primary btn-lg">
                                     Продолжить как повар
                                 </a>
                             {% elif user.role.title == "Student" %}

@@ -1,21 +1,31 @@
-{% extends 'base/base_student.html' %} {% block main %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6" style="background: white; padding: 30px; border-radius: 10px; shadow: 0 0 10px rgba(0,0,0,0.1);">
-            <h2 class="text-center mb-4">Оформление заказа еды</h2>
-            
-            <div class="alert alert-info">
-                Ваш текущий баланс: <strong>{{ balance }} руб.</strong>
-            </div>
+{% extends 'base/base_student.html' %} 
+{% block main %}
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+
+<div class="container mt-5" style="padding-top: 90px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="bi bi-cart-check me-2"></i>Оформление заказа еды
+                    </h2>
+                    
+                    <div class="alert alert-info border-0 bg-light">
+                        <i class="bi bi-wallet2 me-2"></i>
+                        Ваш текущий баланс: <strong class="text-primary">{{ balance }} руб.</strong>
                     </div>
-                {% endfor %}
-            {% endif %}
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0" role="alert">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
             <form method="post">
                 {% csrf_token %}
@@ -26,6 +36,7 @@
                         {{ field }}
                         {% if field.errors %}
                             <div class="text-danger small">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
                                 {% for error in field.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
@@ -34,10 +45,10 @@
 
                 <div class="mt-4">
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">ОФОРМИТЬ ЗАКАЗ</button>
+                        <button type="submit" class="btn btn-success btn-lg py-3 fw-bold"> <i class="bi bi-cart-check me-2"></i>ОФОРМИТЬ ЗАКАЗ</button>
                     </div>
                     <div class="text-center mt-3">
-                        <a href="{% url 'main_page' %}" class="btn btn-outline-dark btn-lg">Назад</a>
+                        <a href="{% url 'main_page' %}" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
                     </div>
                 </div>
                 

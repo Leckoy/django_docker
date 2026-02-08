@@ -8,5 +8,5 @@ urlpatterns = [
     path("top_up/", views.top_up, name="top_up"),
     path("pay_onetime/", views.pay_onetime, name="pay_onetime_page"),
     path("season_ticket/", views.season_ticket, name="season_ticket_page"),
-    path("comment/", views.comment, name="comment_page")
+    path("comment/<int:dish_id>/", views.comment, name="comment_page")
 ]

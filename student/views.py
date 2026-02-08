@@ -9,7 +9,7 @@ from rest_framework import status, generics # type: ignore
 from django.db import transaction
 from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import StudentOrderForm
 
@@ -23,7 +23,7 @@ def menu(request: HttpRequest) -> HttpResponse:
     return render(request, "student/menu.html", context)
 
 def allergy(request: HttpRequest) -> HttpResponse:
-    return render(request, "student/allergy.html", context)
+    return render(request, "student/allergy.html")
 
 def top_up(request: HttpRequest) -> HttpResponse:
     context = {}
@@ -37,9 +37,9 @@ def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}
     return render(request, "student/season_ticket.html", context)
 
-def comment(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/comment.html", context)
+def comment(request: HttpRequest, dish_id) -> HttpResponse:
+    dish = get_object_or_404(Dish, id=dish_id)
+    return render(request, "student/comment.html", {"dish": dish})
 
 
 

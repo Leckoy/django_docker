@@ -10,4 +10,6 @@ path('create/', views.CreateMenu, name='create_menu'),
 
 path("dishes/", views.DishAdd, name='dish'),
 
+path('main/', index, name="main_cook_page")
+
 ]

@@ -3,22 +3,49 @@
 <html>
 <head>
 <title>{{title}}</title>
-<link type="text/css" href="{%static "test/css/styles.css" %}" rel = "stylesheet" />
 </head>
 <body>
-{% block header %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
-{% endblock  %}
-{% block mainmenu %}
+    <header>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    {% block header %}
+    {% endblock  %}
+    </header>
+{% comment %} {% block mainmenu %}
 <ul>
 {% for m in menu %}
 <li>{{m}}</li>
 {% endfor %}
 </ul>
-{% endblock mainmenu %}
+{% endblock mainmenu %} {% endcomment %}
+    <nav class="navbar bg-top bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
+        <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
+            <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
+                {{ user.name }}
+            </p>
+            <a href="{% url 'logout' %}" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Выйти из аккаунта</a>
+        </div>
+    </nav>
 {% block content %}
+{% endblock %}
+<style>
+    .border-color {
+        border-color: #b5c6f5 !important;
+    }
+    .btn-outline-color {
+        color: #010849;
+        border-color: #2652ca;
+    }
+    .btn-outline-color:hover {
+        background-color: #2652ca;
+        color: white;
+    }
+	.bg-top{
+		background-color: #4252e6;
+	}
+</style>
+{% block extra_css %}
 {% endblock %}
 </body>
 </html>

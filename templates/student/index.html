@@ -3,55 +3,46 @@
 
 {% block main %}
 
-<nav class="navbar bg-primary bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
-    <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
-        <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
-            {{ user.name }}
-        </p>
-        <a href="{% url 'logout' %}" class="btn btn-danger">Выйти из аккаунта</a>
-    </div>
-</nav>
-
 <div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
   <div class="col">
-    <div class="card">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
       <div class="card-body">
-        <h5 class="card-title">Меню</h5>
+        <h4 class="card-title"><i class="bi bi-menu-button-wide me-1"></i>Меню</h4>
         <p class="card-text">Здесь вы можете ознакомиться с меню</p>
-        <a href="{% url 'menu_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+        <a href="{% url 'menu_page' %}"><button class="btn btn-outline-color " type="submit">Перейти</button></a>
       </div>
     </div>
   </div>
   <div class="col">
-    <div class="card">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
       <div class="card-body">
-        <h5 class="card-title">Аллергии</h5>
+        <h4 class="card-title"><i class="bi bi-capsule me-1"></i>Аллергии</h4>
         <p class="card-text">Если у вас есть аллергии на какие-то продукты, пожалуйста напишите нам</p>
-        <a href="{% url 'allergy_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+        <a href="{% url 'allergy_page' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
       </div>
     </div>
   </div>
   <div class="col">
-    <div class="card">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
       <div class="card-body">
-        <h5 class="card-title">Абонемент</h5>
+        <h4 class="card-title"><i class="bi bi-calendar2-check me-1"></i>Абонемент</h4>
         <p class="card-text">Здесь вы можете выбрать абонемент</p>
-        <a href="{% url 'season_ticket_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+        <a href="{% url 'season_ticket_page' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
       </div>
     </div>
   </div>
   <div class="col">
-    <div class="card">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
       <div class="card-body">
-        <h5 class="card-title">Разовая оплата</h5>
+        <h4 class="card-title"><i class="bi bi-credit-card me-1"></i>Разовая оплата</h4>
         <p class="card-text">Здесь вы можете оплатить сегодняшний прием пищи</p>
-        <a href="{% url 'pay_onetime_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
+        <a href="{% url 'pay_onetime_page' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row mt-5 mb-5"> 
+<div class="row mt-4 mb-5"> 
     <div class="col-12 text-center">
         <h3 class="mb-4">Всё готово к оформлению</h3> 
         <button type="button" class="btn btn-success btn-lg px-5 py-3 fw-bold">
@@ -62,3 +53,4 @@
 </div>
 
 {% endblock %}
+
