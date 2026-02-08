@@ -54,6 +54,8 @@ def fdishes(request):
 	return render(request, "cook/products.html", {"product": dish})
 
 
+def index(request):
+    return render(request, "cook/index.html", {"title": "Home page"})
 
 
 
@@ -89,7 +91,7 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
             )
             new_menu.save()
             messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
-            return redirect('main_page')
+            return redirect('main_cook_page')
     else:
         form = CreateMenuForm()
 
@@ -194,7 +196,7 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
             else:
                 dishh.weight += weigh
                 dishh.save()
-                return redirect('/cook/dish/') 
+                return redirect('dish')#redirect('/cook/dish/') 
         else:
             messages.error(request, "Ошибка: выберите блюдо из списка.")
     else:
