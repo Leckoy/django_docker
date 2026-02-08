@@ -2,9 +2,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,linux,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,linux,python
 
-# База данных SQLite
-db.sqlite3
-*.db
 
 ### Linux ###
 *~
@@ -245,3 +242,5 @@ $RECYCLE.BIN/
 .vs/
 
 db.sqlite3
+*.db
+
