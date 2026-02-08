@@ -9,5 +9,5 @@ path('ingredient/', views.IngredientUse, name='ingredient'),
 path('create/', views.CreateMenu, name='create_menu'),
 
 path("dishes/", views.DishAdd, name='dish'),
-
+path("order/", views.IngredientOrder, name='order'),
 ]
