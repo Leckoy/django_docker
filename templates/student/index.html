@@ -1,18 +1,14 @@
 {% extends "base/base_student.html" %}
 
-{% block header %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-{% endblock  %}
 {% block main %}
 
 <nav class="navbar bg-primary bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
-    <div class="container-fluid justify-content-end">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-person-circle fs-5 me-2"></i>
-            <span class="fw-bold">{{user.name}}</span>
-        </div>
+    <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
+        <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
+            {{ user.name }}
+        </p>
+        <a href="{% url 'logout' %}" class="btn btn-danger">Выйти из аккаунта</a>
     </div>
 </nav>
 
@@ -38,8 +34,8 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Абонимент</h5>
-        <p class="card-text">Здесь вы можете выбрать абонимент</p>
+        <h5 class="card-title">Абонемент</h5>
+        <p class="card-text">Здесь вы можете выбрать абонемент</p>
         <a href="{% url 'season_ticket_page' %}"><button class="btn btn-outline-dark btn-lg" type="submit">Перейти</button></a>
       </div>
     </div>

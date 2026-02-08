@@ -32,9 +32,15 @@
                     </div>
                 {% endfor %}
 
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">ОФОРМИТЬ ЗАКАЗ</button>
+                <div class="mt-4">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">ОФОРМИТЬ ЗАКАЗ</button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'main_page' %}" class="btn btn-outline-dark btn-lg">Назад</a>
+                    </div>
                 </div>
+                
             </form>
         </div>
     </div>

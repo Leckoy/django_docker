@@ -4,9 +4,9 @@ from . import views
 urlpatterns = [
 
 
-path('ingredients/', IngredientUseAPI.as_view(), name='ingredient-dashboard'),
+path('ingredients/', IngredientUseAPI, name='ingredient-dashboard'),
 
-path('ingredients/<int:pk>/use/', IngredientUseAPI.as_view(), name='ingredient-use'),
+path('ingredients/<int:pk>/use/', IngredientUseAPI, name='ingredient-use'),
 
 path('dish/<int:pk>', StockCookDishAPI.as_view(), name='cook-dashboard'),
 

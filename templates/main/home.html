@@ -17,8 +17,8 @@
                     <p><h5>Ваша роль: <span class="badge bg-primary">{{ user.role.title }}</span></p></h5>
                     
                         <div class="d-grid gap-3 mt-4">
-                            {% if user.role.title == "Cook" %}
-                                <a href="{% url 'cook-dashboard' %}" class="btn btn-primary btn-lg">
+                            {% if user.role.title == "cook" %}
+                                <a href="{% url 'create_menu' %}" class="btn btn-primary btn-lg">
                                     Продолжить как повар
                                 </a>
                             {% elif user.role.title == "Student" %}
