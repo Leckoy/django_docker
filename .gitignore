@@ -244,3 +244,4 @@ $RECYCLE.BIN/
 
 .vs/
 
+db.sqlite3
