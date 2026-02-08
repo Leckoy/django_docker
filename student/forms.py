@@ -24,7 +24,7 @@ class StudentOrderForm(forms.ModelForm):
     class Meta:
         model = Purchases
         fields = [ 'date_of_meal', 'food_intake']
-<<<<<<< HEAD
+
 
 
 
@@ -56,5 +56,4 @@ class FeedBackForm(forms.Form):
         required=False
     )
    
-=======
->>>>>>> origin/Kate
+

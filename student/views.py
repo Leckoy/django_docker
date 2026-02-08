@@ -2,15 +2,14 @@ from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
 from cook.models import Dish, Menu, Review, Stock, Ingredient
 from main.decorators import role_required
-<<<<<<< HEAD
+
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-=======
-# from cook.models import dishes
+
 from rest_framework.views import APIView # type: ignore
 from rest_framework.response import Response # type: ignore
 from rest_framework import status, generics # type: ignore
->>>>>>> origin/Kate
+
 from django.db import transaction
 from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
