@@ -1,59 +1,18 @@
 from django.db.models import Sum
-from django.http import HttpRequest, HttpResponse
-from cook.models import Dish, Menu, Stock
+from django.http import HttpRequest,HttpResponseForbidden, HttpResponse
+from cook.models import Dish, Menu, Stock, Ingredient
 from main.decorators import role_required
 from .serializers import IngredientSerializer, DishSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, generics
+
 from django.db import transaction
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import CreateMenuForm
+from .forms import CreateMenuForm, IngredientUseForm, DishAddForm
 
 
-class IngredientUseAPI(generics.RetrieveUpdateAPIView):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-
-    def patch(self, request, *args, **kwargs):
-        instance = self.get_object() 
-        
-        try:
-            val = request.data.get('amount', 0)
-            remove_amount = float(val) 
-        except (ValueError, TypeError):
-            return Response(
-                {"error": "Введите корректное число"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if remove_amount <= 0:
-            return Response(
-                {"error": "Число должно быть больше 0"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if remove_amount <= instance.amount:
-            instance.amount -= remove_amount
-            instance.save()
-            
-            return Response({
-                "message": f"Списано {remove_amount} единиц",
-                "total": instance.amount
-            }, status=status.HTTP_200_OK)
-        
-        return Response(
-            {"error": f"Недостаточно! Остаток: {instance.amount}"}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    def put(self, request, *args, **kwargs):
-         return self.patch(request, *args, **kwargs)
-
-
-class StockCookDishAPI(generics.RetrieveUpdateAPIView):
+'''class StockCookDishAPI(generics.RetrieveUpdateAPIView):
     queryset = Stock.objects.all()
     serializer_class = DishSerializer
 
@@ -82,7 +41,7 @@ class StockCookDishAPI(generics.RetrieveUpdateAPIView):
 
     def put(self, request, *args, **kwargs):
          return self.patch(request, *args, **kwargs)
-
+    '''
 
 
 
@@ -95,7 +54,8 @@ def fdishes(request):
 	return render(request, "cook/products.html", {"product": dish})
 
 
-
+def index(request):
+    return render(request, "cook/index.html", {"title": "Home page"})
 
 
 def CreateMenu(request: HttpRequest) -> HttpResponse:
@@ -130,7 +90,7 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
             )
             new_menu.save()
             messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
-            return redirect('main_page')
+            return redirect('main_cook_page')
     else:
         form = CreateMenuForm()
 
@@ -139,3 +99,70 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
 
 
 
+
+def IngredientUse(request: HttpRequest) -> HttpResponse:
+    context = {}
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 3: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
+
+
+    if request.method == 'POST':
+        form = IngredientUseForm(request.POST)
+        if form.is_valid():
+            count = form.cleaned_data.get('amount')
+            ingr = form.cleaned_data.get('title')
+
+            if ingr.amount < count:
+                messages.error(request, "У вас недостаточно ингредиентов")
+            else:
+                ingr.amount -= count
+                ingr.save()
+                return redirect("ingredient") 
+        else:
+            messages.error(request, "Ошибка: выберите ингредиент из списка.")
+    else:
+        form = IngredientUseForm()
+    all_ingredients = Ingredient.objects.all()
+    return render(request, 'cook/ingredient.html', {
+            'form': form,
+            'all_ingredients': all_ingredients
+        })
+
+
+
+
+def DishAdd(request: HttpRequest) -> HttpResponse:
+    context = {}
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 3: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
+
+
+    if request.method == 'POST':
+        form = DishAddForm(request.POST)
+        if form.is_valid():
+            weigh = form.cleaned_data.get('weigh')
+            dishh = form.cleaned_data.get('title')
+
+            if 0 > weigh:
+                messages.error(request, "Введите корректное число")
+            else:
+                dishh.weight += weigh
+                dishh.save()
+                return redirect('dish') 
+        else:
+            messages.error(request, "Ошибка: выберите блюдо из списка.")
+    else:
+        form = DishAddForm()
+    all_ingredients = Dish.objects.all()
+    return render(request, 'cook/dish.html', {
+            'form': form,
+            'all_ingredients': all_ingredients
+        })

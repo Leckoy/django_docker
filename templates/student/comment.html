@@ -1,7 +1,11 @@
 {% extends "base/base_student.html" %}
 {% load static %}
 
-{% block main%}
+{% block main%}<div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
+    <div class="col">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+        <div class="card-body">
+<h5>{{dish.title}}</h5>
     <form method="post" action="menu.html">
         <select id="score" name="score">
             <option value="1">1</option>
@@ -14,5 +18,8 @@
         <input type="text" id="comment" name="comment"/>
         <button type="submit" id="comment-button"> Отправить </button>
     </form>
+        </div>
+    </div>
+    </div>
 
 {% endblock%}

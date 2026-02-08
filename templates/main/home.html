@@ -1,25 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home</title>
-</head>
-<body>
-    <h1>Welcome to the Home Page</h1>
+{% extends "base/base_main.html" %}
 
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.name }} (Role: {{ user.role.title }})</p>
-        <p><a href="{% url 'logout' %}">Logout</a></p>
+{% block header %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-    
-        {% if user.role.title == "Cook" %}
-            <p><a href="{% url 'cook-dashboard' %}">Go to Cook Dashboard</a></p>
-        {% elif user.role.title == "Student" %}
-            <p><a href="{% url 'main_page' %}">Go to Student Dashboard</a></p>
-        {% endif %}
+{% endblock  %}
 
-    {% else %}
-        <p>You are not logged in.</p>
-        <p><a href="{% url 'login' %}">Login</a> | <a href="{% url 'registration_page' %}">Register</a></p>
-    {% endif %}
-</body>
-</html>
+{% block main %}
+<div class="container position-absolute top-50 start-50 translate-middle">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+                    {% if user.is_authenticated %}
+                    
+                    <h1 class="text-success">Добро пожаловать!</h4>
+                    <p class="mt-5"><h4>Здравствуйте, <strong>{{ user.name }}</strong></h4></p>
+                    <p><h5>Ваша роль: <span class="badge bg-primary">{{ user.role.title }}</span></p></h5>
+                    
+                        <div class="d-grid gap-3 mt-4">
+                            {% if user.role.title == "cook" %}
+                                <a href="{% url 'main_cook_page' %}" class="btn btn-primary btn-lg">
+                                    Продолжить как повар
+                                </a>
+                            {% elif user.role.title == "Student" %}
+                                <a href="{% url 'main_page' %}" class="btn btn-primary btn-lg">
+                                    Продолжить как ученик
+                                </a>
+                            {% endif %}
+                            
+                            <!-- Выход -->
+                            <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
+                                Выйти из аккаунта
+                            </a>
+                        </div>
+                    
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            Вы пока не зарегистрировались.
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <a href="{% url 'login' %}" class="btn btn-primary me-md-2">Вход в систему</a>
+                            <a href="{% url 'registration_page' %}" class="btn btn-outline-primary">Регистрация</a>
+                        </div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

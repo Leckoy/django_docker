@@ -1,7 +1,7 @@
 
 from django import forms
 from .models import Dish
-from cook.models import Menu
+from cook.models import Menu, Ingredient
 
 class CreateMenuForm(forms.ModelForm):
     FOOD_CHOICES = [
@@ -62,3 +62,53 @@ class CreateMenuForm(forms.ModelForm):
         self.fields['dish3'].queryset = Dish.objects.filter(dish_type=3) # Только гарниры
         self.fields['dish4'].queryset = Dish.objects.filter(dish_type=4) # Только салаты
         self.fields['dish5'].queryset = Dish.objects.filter(dish_type=5) # Только напитки
+
+
+
+
+class IngredientUseForm(forms.ModelForm):
+    title = forms.ModelChoiceField(
+        queryset=Ingredient.objects.all(),
+        label="Ингредиент",
+        to_field_name = "title",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'list': 'ingredients_datalist',
+            'autocomplete': 'off'
+        })
+    )
+
+    amount = forms.FloatField(
+        label="Количество использованных ингредиетов",
+        widget=forms.NumberInput(attrs={'type': 'int', 'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ['title', 'amount']
+
+
+
+class DishAddForm(forms.ModelForm):
+    title = forms.ModelChoiceField(
+        queryset=Dish.objects.all(),
+        label="Блюдо",
+        to_field_name = "title",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'list': 'dish_datalist',
+            'autocomplete': 'off',
+            "style": "width: 500px;"
+        })
+    )
+
+    weigh = forms.FloatField(
+        label="Количество блюд для добавления",
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control', 
+            'step': '0.01'
+        })
+    )
+    class Meta:
+        model = Dish
+        fields = ['title', 'weigh']

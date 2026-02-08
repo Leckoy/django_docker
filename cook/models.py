@@ -57,6 +57,7 @@ class Stock(models.Model):
     
     def __str__(self):
         return f"{self.dish.title} от {self.date}"
+    
 class OrderStatus(models.Model):
     description = models.CharField(max_length=255)
     
