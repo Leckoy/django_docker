@@ -1,16 +1,16 @@
 {% extends "base/base_student.html" %}
-{% load static %}
 
 {% block main%}
-    {% for dish in dishes %}
-        <h1>{{dish.title}}</h1>
-        <a href="{% url 'comment_page' %}">
-            <button type="submit" >Оставить отзыв</button>
-        </a>
+
+
+{% for dish in dishes %}
+<h1>{{dish.title}}</h1>
+<a href="{% url 'comment_page' dish.id %}">
+    <button type="submit">Оставить отзыв</button>
+</a>
     {% endfor %}
-    <p>
-        <a href="{% url 'main_page' %}"><button type="submit" >Главная</button>
-    </p>
-    
+<p>
+    <a href="{% url 'main_page' %}"><button type="submit">Главная</button>
+</p>
 
 {% endblock%}

@@ -1,18 +1,35 @@
 {% extends "base/base_student.html" %}
 {% load static %}
 
-{% block main%}
-    <form method="post" action="menu.html">
-        <select id="score" name="score">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-        <label for="comment">Оставьте свой комментарий</label>
-        <input type="text" id="comment" name="comment"/>
-        <button type="submit" id="comment-button"> Отправить </button>
+{% block main %}
+<div style="padding: 20px;">
+    <h2>Отзыв для: {{ dish.title }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label>Оценка:</label><br>
+            <select name="mark">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </p>
+
+        <p>
+            <label>Ваш комментарий:</label><br>
+            <textarea name="comment" rows="5" cols="40"></textarea>
+        </p>
+
+        <button type="submit">Отправить отзыв</button>
     </form>
 
-{% endblock%}
+    <hr>
+    <a href="{% url 'main_page' %}">
+        <button type="button">На главную</button>
+    </a>
+</div>
+{% endblock %}

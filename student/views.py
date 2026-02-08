@@ -1,17 +1,15 @@
 from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
-from cook.models import Dish, Menu, Stock
+from cook.models import Dish, Menu, Review, Stock, Ingredient
 from main.decorators import role_required
-# from cook.models import dishes
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, generics
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
 from django.db import transaction
 from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import StudentOrderForm
+from .forms import StudentOrderForm, FeedBackForm
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -38,9 +36,9 @@ def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}
     return render(request, "student/season_ticket.html", context)
 
-def comment(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/comment.html", context)
+def comment(request: HttpRequest, dish_id) -> HttpResponse:
+    dish = get_object_or_404(Dish, id=dish_id)
+    return render(request, "student/comment.html", {"dish": dish})
 
 
 
@@ -90,6 +88,33 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
 
 
 
+def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
+    context = {}
+
+    student = request.user.student_profile
+    dish = get_object_or_404(Dish, id=dish_id)
+    if request.method == 'POST':
+        form = FeedBackForm(request.POST)
+        if form.is_valid():
+            new_komment = Review()
+
+            mark = form.cleaned_data.get('mark')
+            comment = form.cleaned_data.get('comment')
+            new_komment.comment = comment
+            new_komment.mark = mark
+            new_komment.date = timezone.now()
+            new_komment.dish = dish
+            new_komment.student = student
+            new_komment.save()
+            return redirect('/student/menu/') 
+        else:
+            messages.error(request, "Ошибка: проверьте данные формы.")
+    else:
+        form = FeedBackForm()
+    return render(request, 'student/comment.html', {
+            'form': form,
+            'dish': dish
+        })
 
 
 
