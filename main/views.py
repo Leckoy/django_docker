@@ -11,6 +11,7 @@ def registration(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+
             login(request, user)  # auto login after registration
             return redirect("home")  # redirect to homepage
     else:

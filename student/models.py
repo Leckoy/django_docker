@@ -5,7 +5,7 @@ class Student(models.Model):
     money = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     student_class = models.CharField(max_length=50, db_column='class')
 
-    def str(self):
+    def __str__(self):
         return f"{self.user.name} ({self.student_class}) — {self.money} руб."
 
 class Purchases(models.Model):
@@ -18,7 +18,7 @@ class Purchases(models.Model):
     food_intake = models.CharField(max_length=50)
     type_of_purchase = models.CharField(max_length=50)
     
-    def str(self):
+    def __str__(self):
         return f"Чек №{self.id} — {self.student.user.name}"
 
 
