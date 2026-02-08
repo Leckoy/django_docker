@@ -41,7 +41,7 @@ from .forms import CreateMenuForm, IngredientOrdeForm, IngredientUseForm, DishAd
 
     def put(self, request, *args, **kwargs):
          return self.patch(request, *args, **kwargs)
-     '''
+    '''
 
 
 
@@ -54,7 +54,8 @@ def fdishes(request):
 	return render(request, "cook/products.html", {"product": dish})
 
 
-
+def index(request):
+    return render(request, "cook/index.html", {"title": "Home page"})
 
 
 def CreateMenu(request: HttpRequest) -> HttpResponse:
@@ -89,13 +90,12 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
             )
             new_menu.save()
             messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
-            return redirect('main_page')
+            return redirect('main_cook_page')
     else:
         form = CreateMenuForm()
 
     context['form'] = form
     return render(request, 'cook/create_menu.html', context)
-
 
 
 
@@ -121,7 +121,10 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
             else:
                 ingr.amount -= count
                 ingr.save()
-                return redirect('/cook/ingredient/') 
+
+
+                return redirect("http://localhost:8000/cook/ingredient/") 
+
         else:
             messages.error(request, "Ошибка: выберите ингредиент из списка.")
     else:
@@ -194,7 +197,7 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
             else:
                 dishh.weight += weigh
                 dishh.save()
-                return redirect('/cook/dish/') 
+                return redirect('dish') 
         else:
             messages.error(request, "Ошибка: выберите блюдо из списка.")
     else:

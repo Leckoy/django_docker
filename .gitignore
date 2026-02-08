@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,linux,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,linux,python
 
+# База данных SQLite
+db.sqlite3
+*.db
+
 ### Linux ###
 *~
 
@@ -23,10 +27,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/Kate
 # C extensions
 *.so
 

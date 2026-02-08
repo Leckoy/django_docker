@@ -2,12 +2,19 @@ from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
 from cook.models import Dish, Menu, Review, Stock, Ingredient
 from main.decorators import role_required
+<<<<<<< HEAD
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+=======
+# from cook.models import dishes
+from rest_framework.views import APIView # type: ignore
+from rest_framework.response import Response # type: ignore
+from rest_framework import status, generics # type: ignore
+>>>>>>> origin/Kate
 from django.db import transaction
 from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import StudentOrderForm, FeedBackForm
 
@@ -21,8 +28,7 @@ def menu(request: HttpRequest) -> HttpResponse:
     return render(request, "student/menu.html", context)
 
 def allergy(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/allergy.html", context)
+    return render(request, "student/allergy.html")
 
 def top_up(request: HttpRequest) -> HttpResponse:
     context = {}
@@ -30,7 +36,7 @@ def top_up(request: HttpRequest) -> HttpResponse:
 
 #def pay_onetime(request: HttpRequest) -> HttpResponse:
     #context = {}
-   # return render(request, "student/pay_onetime.html", context)
+    # return render(request, "student/pay_onetime.html", context)
 
 def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}

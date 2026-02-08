@@ -97,12 +97,13 @@ class DishAddForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'list': 'dish_datalist',
-            'autocomplete': 'off'
+            'autocomplete': 'off',
+            "style": "width: 500px;"
         })
     )
 
     weigh = forms.FloatField(
-        label="Количество блюд ддля добавления",
+        label="Количество блюд для добавления",
         widget=forms.NumberInput(attrs={
             'class': 'form-control', 
             'step': '0.01'

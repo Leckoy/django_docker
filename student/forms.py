@@ -1,6 +1,7 @@
 from django import forms
 from .models import Purchases
-from cook.models import Menu
+from cook.models import Menu, Ingredient
+from .models import Allergy
 
 class StudentOrderForm(forms.ModelForm):
     FOOD_CHOICES = [
@@ -23,6 +24,7 @@ class StudentOrderForm(forms.ModelForm):
     class Meta:
         model = Purchases
         fields = [ 'date_of_meal', 'food_intake']
+<<<<<<< HEAD
 
 
 
@@ -54,3 +56,5 @@ class FeedBackForm(forms.Form):
         required=False
     )
    
+=======
+>>>>>>> origin/Kate
