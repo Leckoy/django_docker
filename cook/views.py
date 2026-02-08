@@ -121,7 +121,7 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
             else:
                 ingr.amount -= count
                 ingr.save()
-                return redirect("http://localhost:8000/cook/ingredient/") 
+                return redirect("ingredient") 
         else:
             messages.error(request, "Ошибка: выберите ингредиент из списка.")
     else:

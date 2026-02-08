@@ -2,6 +2,7 @@ from django import forms
 from .models import User, Role
 from django.contrib.auth import authenticate
 from student.models import Student
+
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
         label="Password",

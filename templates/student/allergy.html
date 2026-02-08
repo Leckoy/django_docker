@@ -2,10 +2,64 @@
 {% load static %}
 
 {% block main %}
-    <form method="post" action="{% url "main_page" %}">
-        {% csrf_token %}
-        <label for="comment">Введите продукт аллергии</label>
-        <input type="text" id="comment" name="comment"/>
-        <button type="submit" id="allergy-button"> Отправить </button>
-    </form>
+<div class="container mt-5" style="padding-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mb-4">
+            <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="bi bi-capsule me-1"></i>Добавить аллергию</h4>
+                    
+                    <form method="post" class="mt-3" style="padding-top: 50px;">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            {{ form.ingredient.label_tag }}
+                            {{ form.ingredient }}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-outline-color">
+                                <i class="bi bi-plus-circle me-1"></i>Добавить
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="d-grid mt-2">
+                        <a href="{% url 'main_page' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Вернуться на главную
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="bi bi-list-ul me-1"></i>Мои аллергии</h4>
+                    
+                    {% if allergies %}
+                    <ul class="list-group list-group-flush mt-3">
+                        {% for allergy in allergies %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">{{ forloop.counter }}. {{ allergy.ingredient.title }}</span>
+                            <form method="post" action="{% url 'allergy_delete' allergy.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle me-2"></i>У вас нет добавленных аллергий
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
