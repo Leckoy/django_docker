@@ -112,3 +112,26 @@ class DishAddForm(forms.ModelForm):
     class Meta:
         model = Dish
         fields = ['title', 'weigh']
+
+
+
+class IngredientOrdeForm(forms.ModelForm):
+    title = forms.ModelChoiceField(
+        queryset=Ingredient.objects.all(),
+        label="Ингредиент",
+        to_field_name = "title",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'list': 'ingredients_datalist',
+            'autocomplete': 'off'
+        })
+    )
+
+    amount = forms.FloatField(
+        label="Количество заказанных ингредиетов",
+        widget=forms.NumberInput(attrs={'type': 'int', 'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ['title', 'amount']
