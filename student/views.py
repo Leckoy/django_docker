@@ -1,4 +1,5 @@
 from django.db.models import Sum
+<<<<<<< HEAD
 from django.http import HttpRequest, HttpResponseForbidden, HttpResponse
 from cook.models import Dish, Menu,Review, Stock
 from main.decorators import role_required
@@ -7,12 +8,30 @@ from rest_framework.views import APIView # type: ignore
 from rest_framework.response import Response # type: ignore
 from rest_framework import status, generics # type: ignore
 from django.db import transaction, IntegrityError
+=======
+from django.http import HttpRequest, HttpResponse
+from cook.models import Dish, Menu, Review, Stock, Ingredient
+from main.decorators import role_required
+
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+
+from rest_framework.views import APIView # type: ignore
+from rest_framework.response import Response # type: ignore
+from rest_framework import status, generics # type: ignore
+
+from django.db import transaction
+>>>>>>> 7880e87ef0853a8539a202a594cdd2ab33ed0404
 from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+<<<<<<< HEAD
 from django.utils import timezone
 from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm
+=======
+from .forms import StudentOrderForm, FeedBackForm
+>>>>>>> 7880e87ef0853a8539a202a594cdd2ab33ed0404
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -188,6 +207,33 @@ def Menu_view(request):
         'm7': m7,
     })
 
+def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
+    context = {}
+
+    student = request.user.student_profile
+    dish = get_object_or_404(Dish, id=dish_id)
+    if request.method == 'POST':
+        form = FeedBackForm(request.POST)
+        if form.is_valid():
+            new_komment = Review()
+
+            mark = form.cleaned_data.get('mark')
+            comment = form.cleaned_data.get('comment')
+            new_komment.comment = comment
+            new_komment.mark = mark
+            new_komment.date = timezone.now()
+            new_komment.dish = dish
+            new_komment.student = student
+            new_komment.save()
+            return redirect('/student/menu/') 
+        else:
+            messages.error(request, "Ошибка: проверьте данные формы.")
+    else:
+        form = FeedBackForm()
+    return render(request, 'student/comment.html', {
+            'form': form,
+            'dish': dish
+        })
 
 
 
