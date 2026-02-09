@@ -1,36 +1,18 @@
-from django.db.models import Sum
-
-from django.http import HttpRequest, HttpResponseForbidden, HttpResponse
-from cook.models import Dish, Menu,Review, Stock
-from main.decorators import role_required
-from datetime import timedelta
-from rest_framework.views import APIView # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status, generics # type: ignore
-from django.db import transaction, IntegrityError
-
-from django.http import HttpRequest, HttpResponse
-from cook.models import Dish, Menu, Review, Stock, Ingredient
-from main.decorators import role_required
-
-from django.utils import timezone
-from django.shortcuts import get_object_or_404
-
-from rest_framework.views import APIView # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status, generics # type: ignore
-
-from django.db import transaction
-
-from .models import Student, Purchases, Allergy
-from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db import transaction, IntegrityError
+from datetime import timedelta
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
+from cook.models import Dish, Menu, Review, Stock, Ingredient
+from main.decorators import role_required
+from .models import Student, Purchases, Allergy
 from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm
-
-from .forms import StudentOrderForm, FeedBackForm
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -64,6 +46,26 @@ def allergy(request: HttpRequest) -> HttpResponse:
         "form":form,
         "allergies": Allergy.objects.filter(student=student)
         })
+def top_up(request: HttpRequest) -> HttpResponse:
+    context = {}
+    return render(request, "student/top_up.html", context)
+
+def season_ticket(request: HttpRequest) -> HttpResponse:
+    context = {}
+    return render(request, "student/season_ticket.html", context)
+
+
+
+def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
+    try:
+        student = request.user.student_profile
+        allergy = get_object_or_404(Allergy, id=allergy_id, student=student)
+        allergy.delete()
+    except:
+        pass
+    return redirect("allergy_page")
+
+
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
     context = {}
 
@@ -91,69 +93,99 @@ def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
             'form': form,
             'dish': dish
         })
+@login_required
+def my_purchases_list(request):
+    student_profile = get_object_or_404(Student, user=request.user)
+    today = timezone.now().date()
 
+    if request.method == "POST":
+        purchase_id = request.POST.get("purchase_id")
+        purchase = get_object_or_404(Purchases, id=purchase_id, student=student_profile)
 
+        if not purchase.attendance:
+            purchase.attendance = True
+            purchase.save()
 
-def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
-    try:
-        student = request.user.student_profile
-        allergy = get_object_or_404(Allergy, id=allergy_id, student=student)
-        allergy.delete()
-    except:
-        pass
-    return redirect("allergy_page")
+            menu = purchase.menu
+            dishes = [menu.dish1, menu.dish2, menu.dish3, menu.dish4, menu.dish5]
 
-def top_up(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/top_up.html", context)
+            for dish in dishes:
+                if dish:
+                    stock_item, created = Stock.objects.get_or_create(
+                        dish=dish,
+                        date=today,
+                        defaults={
+                            'amount_cooked': 0, 
+                            'amount_sold': 1,
+                            'expiration_date': today
+                        }
+                    )
+                    if not created:
+                        stock_item.amount_sold = F('amount_sold') + 1
+                        stock_item.save()
+            
+        return redirect('student_orders_page')
 
-def season_ticket(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/season_ticket.html", context)
+    orders = Purchases.objects.filter(student=student_profile).order_by('-date_of_meal')
 
-def comment(request: HttpRequest, dish_id) -> HttpResponse:
-    dish = get_object_or_404(Dish, id=dish_id)
-    return render(request, "student/comment.html", {"dish": dish})
+    return render(request, 'student/my_orders.html', {
+        'orders': orders,
+        'today': today
+    })
 
 
 
 
 
 def pay_onetime(request: HttpRequest) -> HttpResponse:
-
     student = request.user.student_profile
     
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
-            chosen_date = form.cleaned_data.get('date_of_meal')
-            menu_for_day = Menu.objects.filter(date=chosen_date).first()
-            if menu_for_day is None:
-                messages.error(request, "Меню на этот день не создано")
-                return render(request, 'student/pay_onetime.html', {'form': form})
 
-            menu_for_day = Menu.objects.filter(date=chosen_date).first()
-            order.menu_id = menu_for_day.id
-            price = menu_for_day.dish1.cost + menu_for_day.dish2.cost + menu_for_day.dish3.cost + menu_for_day.dish4.cost +menu_for_day.dish5.cost
+            chosen_date = form.cleaned_data.get('date_of_meal')
+            food_intake = form.cleaned_data.get('food_intake')
+            menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=food_intake).first()
+            
+            if menu_for_day is None:
+                messages.error(request, f"Меню на {chosen_date} ({food_intake}) еще не сформировано.")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
+
+            duplicate_order = Purchases.objects.filter(
+                student=student,
+                date_of_meal=chosen_date,
+                food_intake=food_intake
+            ).exists()
+
+            if duplicate_order:
+                messages.error(request, f"Ошибка: Вы уже оплатили {food_intake} на {chosen_date}!")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
+
+
+            price = menu_for_day.get_total_cost()
 
 
             if student.money < price:
-                messages.error(request, "У вас недостаточно денег на балансе!")
+                messages.error(request, f"Недостаточно средств. Стоимость: {price} руб. Ваш баланс: {student.money} руб.")
             else:
-                with transaction.atomic():
-                    student.money -= price
-                    student.save()
-                    
-                    order.student = student
-                    order.deposited_money = price
-                    order.type_of_purchase = "Баланс"
+                try:
+                    with transaction.atomic():
 
-                    order.save()
+                        student.money -= price
+                        student.save()
 
-                    
-                    messages.success(request, f"Заказ на {order.food_intake} успешно оформлен!")
-                    return redirect('main_page') 
+                        order = form.save(commit=False)
+                        order.student = student
+                        order.menu = menu_for_day
+                        order.deposited_money = price
+                        order.type_of_purchase = "Баланс"
+                        order.save()
+
+                        messages.success(request, f"Заказ на {food_intake} ({chosen_date}) успешно оплачен.")
+                        return redirect('main_page')
+                except Exception as e:
+                    messages.error(request, "Произошла техническая ошибка. Средства не списаны.")
     else:
         form = StudentOrderForm()
 
@@ -161,7 +193,6 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
         'form': form,
         'balance': student.money
     })
-
 
 def Menu_view(request):
 
