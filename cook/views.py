@@ -12,36 +12,6 @@ from django.contrib import messages
 from .forms import CreateMenuForm, IngredientUseForm, DishAddForm
 
 
-'''class StockCookDishAPI(generics.RetrieveUpdateAPIView):
-    queryset = Stock.objects.all()
-    serializer_class = DishSerializer
-
-    def patch(self, request, *args, **kwargs):
-        instance = self.get_object() 
-        
-        try:
-            val = request.data.get('amount_cooked', 0)
-            add_amount = int(val) 
-        except (ValueError, TypeError):
-            return Response(
-                {"error": "Введите корректное число"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if add_amount <= 0:
-            return Response(
-                {"error": "Число должно быть больше 0"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        instance.amount_cooked += add_amount
-        instance.save()
-            
-        return Response({"message": f"Добавлено {add_amount} единиц","total": instance.amount_cooked}, status=status.HTTP_200_OK)
-
-    def put(self, request, *args, **kwargs):
-         return self.patch(request, *args, **kwargs)
-    '''
 
 
 
@@ -88,9 +58,23 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
                 dish5=chosen_dish5,
                 food_intake=food_intake
             )
-            new_menu.save()
-            messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
-            return redirect('main_cook_page')
+            new_menu, created = Menu.objects.update_or_create(
+                date=chosen_date,
+                food_intake=food_intake,
+                defaults={
+                    'dish1': chosen_dish1,
+                    'dish2': chosen_dish2,
+                    'dish3': chosen_dish3,
+                    'dish4': chosen_dish4,
+                    'dish5': chosen_dish5,
+                }
+            )
+            if created:
+                messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
+            else:
+                messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно обновлено (старое затерто)!")
+                
+            return redirect('create_menu')
     else:
         form = CreateMenuForm()
 
