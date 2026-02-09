@@ -62,4 +62,61 @@
             {% if m4.dish2 %}<li>{{ m4.dish2.title }} ({{ m4.dish2.cost }} руб.) <a href="{% url 'comment_page' m4.dish2.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
             {% if m4.dish3 %}<li>{{ m4.dish3.title }} ({{ m4.dish3.cost }} руб.) <a href="{% url 'comment_page' m4.dish3.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
             {% if m4.dish4 %}<li>{{ m4.dish4.title }} ({{ m4.dish4.cost }} руб.) <a href="{% url 'comment_page' m4.dish4.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
-            {% if m4.dish5 %}
+            {% if m4.dish5 %}<li>{{ m4.dish5.title }} ({{ m4.dish5.cost }} руб.) <a href="{% url 'comment_page' m4.dish5.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+        </ul>
+        {% else %}<p class="text-danger">Меню не заполнено</p>{% endif %}
+    </div>
+    <hr>
+
+    {# Через 2 дня — m5 #}
+    <div class="day-block">
+        <h2>Через 2 дня — {{ price5 }} руб.</h2>
+        {% if m5 %}
+        <ul>
+            {% if m5.dish1 %}<li>{{ m5.dish1.title }} ({{ m5.dish1.cost }} руб.) <a href="{% url 'comment_page' m5.dish1.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m5.dish2 %}<li>{{ m5.dish2.title }} ({{ m5.dish2.cost }} руб.) <a href="{% url 'comment_page' m5.dish2.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m5.dish3 %}<li>{{ m5.dish3.title }} ({{ m5.dish3.cost }} руб.) <a href="{% url 'comment_page' m5.dish3.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m5.dish4 %}<li>{{ m5.dish4.title }} ({{ m5.dish4.cost }} руб.) <a href="{% url 'comment_page' m5.dish4.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m5.dish5 %}<li>{{ m5.dish5.title }} ({{ m5.dish5.cost }} руб.) <a href="{% url 'comment_page' m5.dish5.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+        </ul>
+        {% else %}<p class="text-danger">Меню не заполнено</p>{% endif %}
+    </div>
+    <hr>
+
+    {# Через 3 дня — m6 #}
+    <div class="day-block">
+        <h2>Через 3 дня — {{ price6 }} руб.</h2>
+        {% if m6 %}
+        <ul>
+            {% if m6.dish1 %}<li>{{ m6.dish1.title }} ({{ m6.dish1.cost }} руб.) <a href="{% url 'comment_page' m6.dish1.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m6.dish2 %}<li>{{ m6.dish2.title }} ({{ m6.dish2.cost }} руб.) <a href="{% url 'comment_page' m6.dish2.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m6.dish3 %}<li>{{ m6.dish3.title }} ({{ m6.dish3.cost }} руб.) <a href="{% url 'comment_page' m6.dish3.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m6.dish4 %}<li>{{ m6.dish4.title }} ({{ m6.dish4.cost }} руб.) <a href="{% url 'comment_page' m6.dish4.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m6.dish5 %}<li>{{ m6.dish5.title }} ({{ m6.dish5.cost }} руб.) <a href="{% url 'comment_page' m6.dish5.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+        </ul>
+        {% else %}<p class="text-danger">Меню не заполнено</p>{% endif %}
+    </div>
+    <hr>
+
+    {# Через 4 дня — m7 #}
+    <div class="day-block">
+        <h2>Через 4 дня — {{ price7 }} руб.</h2>
+        {% if m7 %}
+        <ul>
+            {% if m7.dish1 %}<li>{{ m7.dish1.title }} ({{ m7.dish1.cost }} руб.) <a href="{% url 'comment_page' m7.dish1.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m7.dish2 %}<li>{{ m7.dish2.title }} ({{ m7.dish2.cost }} руб.) <a href="{% url 'comment_page' m7.dish2.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m7.dish3 %}<li>{{ m7.dish3.title }} ({{ m7.dish3.cost }} руб.) <a href="{% url 'comment_page' m7.dish3.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m7.dish4 %}<li>{{ m7.dish4.title }} ({{ m7.dish4.cost }} руб.) <a href="{% url 'comment_page' m7.dish4.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+            {% if m7.dish5 %}<li>{{ m7.dish5.title }} ({{ m7.dish5.cost }} руб.) <a href="{% url 'comment_page' m7.dish5.id %}"><button type="button">Отзыв</button></a></li>{% endif %}
+        </ul>
+        {% else %}<p class="text-danger">Меню не заполнено</p>{% endif %}
+    </div>
+
+</div>
+
+<p style="margin-left: 20px;">
+    <a href="{% url 'main_page' %}">
+        <button type="button">На главную</button>
+    </a>
+</p>
+{% endblock %}

@@ -49,15 +49,7 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
             chosen_dish5 = form.cleaned_data.get('dish5')
             food_intake = form.cleaned_data.get('food_intake')
             from cook.models import Menu
-            new_menu = Menu(
-                date=chosen_date,
-                dish1=chosen_dish1,
-                dish2=chosen_dish2,
-                dish3=chosen_dish3,
-                dish4=chosen_dish4,
-                dish5=chosen_dish5,
-                food_intake=food_intake
-            )
+           
             new_menu, created = Menu.objects.update_or_create(
                 date=chosen_date,
                 food_intake=food_intake,
