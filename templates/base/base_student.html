@@ -20,6 +20,9 @@
                     <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
                         {{ user.name }}
                     </p>
+                    <p class="fs-3 text-center position-absolute top-50 end-0 translate-middle-y me-5">
+                        Ваш счет: {{ user.student_profile.money }}
+                    </p>
                     <a href="{% url 'logout' %}" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Выйти из аккаунта</a>
                 </div>
             </nav>

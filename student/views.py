@@ -11,7 +11,8 @@ from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import StudentOrderForm, AddAllergyForm
+from .forms import StudentOrderForm, AddAllergyForm, TopUpForm
+from decimal import Decimal
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -56,8 +57,28 @@ def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
     return redirect("allergy_page")
 
 def top_up(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/top_up.html", context)
+
+    try:
+        student = request.user.student_profile
+    except:
+        return redirect('login')
+
+    if request.method == "POST":
+        form = TopUpForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                summa = form.cleaned_data['summa']
+                if not isinstance(summa, Decimal):
+                    summa = Decimal(str(summa))
+                    
+                student.money += summa
+                student.save()
+
+                return redirect('main_page') 
+    else:
+        form = TopUpForm()
+
+    return render(request, "student/top_up.html", {"form": form})
 
 def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}
