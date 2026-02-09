@@ -3,45 +3,15 @@ from django.http import HttpRequest,HttpResponseForbidden, HttpResponse
 from cook.models import Dish, Menu, Stock, Ingredient
 from main.decorators import role_required
 from .serializers import IngredientSerializer, DishSerializer
-
+from decimal import Decimal
 from django.db import transaction
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import CreateMenuForm, IngredientUseForm, DishAddForm
+from .forms import CreateMenuForm, IngredientOrdeForm, IngredientUseForm, DishAddForm
 
 
-'''class StockCookDishAPI(generics.RetrieveUpdateAPIView):
-    queryset = Stock.objects.all()
-    serializer_class = DishSerializer
-
-    def patch(self, request, *args, **kwargs):
-        instance = self.get_object() 
-        
-        try:
-            val = request.data.get('amount_cooked', 0)
-            add_amount = int(val) 
-        except (ValueError, TypeError):
-            return Response(
-                {"error": "Введите корректное число"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if add_amount <= 0:
-            return Response(
-                {"error": "Число должно быть больше 0"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        instance.amount_cooked += add_amount
-        instance.save()
-            
-        return Response({"message": f"Добавлено {add_amount} единиц","total": instance.amount_cooked}, status=status.HTTP_200_OK)
-
-    def put(self, request, *args, **kwargs):
-         return self.patch(request, *args, **kwargs)
-    '''
 
 
 
@@ -79,18 +49,24 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
             chosen_dish5 = form.cleaned_data.get('dish5')
             food_intake = form.cleaned_data.get('food_intake')
             from cook.models import Menu
-            new_menu = Menu(
+           
+            new_menu, created = Menu.objects.update_or_create(
                 date=chosen_date,
-                dish1=chosen_dish1,
-                dish2=chosen_dish2,
-                dish3=chosen_dish3,
-                dish4=chosen_dish4,
-                dish5=chosen_dish5,
-                food_intake=food_intake
+                food_intake=food_intake,
+                defaults={
+                    'dish1': chosen_dish1,
+                    'dish2': chosen_dish2,
+                    'dish3': chosen_dish3,
+                    'dish4': chosen_dish4,
+                    'dish5': chosen_dish5,
+                }
             )
-            new_menu.save()
-            messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
-            return redirect('main_cook_page')
+            if created:
+                messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
+            else:
+                messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно обновлено (старое затерто)!")
+                
+            return redirect('create_menu')
     else:
         form = CreateMenuForm()
 
@@ -121,6 +97,7 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
             else:
                 ingr.amount -= count
                 ingr.save()
+
                 return redirect("ingredient") 
         else:
             messages.error(request, "Ошибка: выберите ингредиент из списка.")
@@ -131,6 +108,44 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
             'form': form,
             'all_ingredients': all_ingredients
         })
+
+
+def IngredientOrder(request: HttpRequest) -> HttpResponse:
+    context = {}
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 3: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
+
+
+    if request.method == 'POST':
+        form = IngredientOrdeForm(request.POST)
+        if form.is_valid():
+            new_order = Order()
+            count = form.cleaned_data.get('amount')
+            ingr = form.cleaned_data.get('title')
+            new_order.ingredient = ingr
+            new_order.amount = count
+            new_order.cost = ingr.cost * Decimal(str(count))
+            new_order.status = 0
+            new_order.save()
+            return redirect('/cook/order/') 
+        else:
+            messages.error(request, "Ошибка: проверьте данные формы.")
+    else:
+        form = IngredientOrdeForm()
+    all_ingredients = Ingredient.objects.all()
+    return render(request, 'cook/order.html', {
+            'form': form,
+            'all_ingredients': all_ingredients
+        })
+
+
+
+
+
 
 
 

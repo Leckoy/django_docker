@@ -1,16 +1,295 @@
 {% extends "base/base_student.html" %}
+{% load static %}
 
-{% block main%}
+{% block main %}
+<div class="menu-schedule" style="padding: 20px; margin-top: 80px;">
+    <h1>Расписание питания</h1>
+    <p>Ваш баланс: <strong>{{ balance }} руб.</strong></p>
 
-    {% for dish in dishes %}
-        <h1>{{dish.title}}</h1>
-        <a href="{% url 'comment_page' dish.id %}">
-            <button type="submit" >Оставить отзыв</button>
-        </a>
-    {% endfor %}
-    <p>
-        <a href="{% url 'main_page' %}"><button type="submit" >Главная</button>
-    </p>
+    <hr>
+
+<!-- День 1: Вчера -->
+<h3>Вчера</h3>
+<strong>Завтрак: {{price1_breakfast}} руб.</strong>
+{% if m1_breakfast %}
+
+<ul>
     
+    {% if m1_breakfast.dish1 %}<li> {{ m1_breakfast.dish1.title }} ({{ m1_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_breakfast.dish2 %}<li> {{ m1_breakfast.dish2.title }} ({{ m1_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_breakfast.dish3 %}<li> {{ m1_breakfast.dish3.title }} ({{ m1_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_breakfast.dish4 %}<li> {{ m1_breakfast.dish4.title }} ({{ m1_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_breakfast.dish5 %}<li> {{ m1_breakfast.dish5.title }} ({{ m1_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
 
-{% endblock%}
+<strong>Обед: {{price1_lunch}} руб.</strong>
+{% if m1_lunch %}
+
+<ul>
+    
+    {% if m1_lunch.dish1 %}<li> {{ m1_lunch.dish1.title }} ({{ m1_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m1_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_lunch.dish2 %}<li> {{ m1_lunch.dish2.title }} ({{ m1_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m1_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_lunch.dish3 %}<li> {{ m1_lunch.dish3.title }} ({{ m1_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m1_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_lunch.dish4 %}<li> {{ m1_lunch.dish4.title }} ({{ m1_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m1_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_lunch.dish5 %}<li> {{ m1_lunch.dish5.title }} ({{ m1_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m1_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price1_dinner}} руб.</strong>
+{% if m1_dinner %}
+
+<ul>
+    
+    {% if m1_dinner.dish1 %}<li> {{ m1_dinner.dish1.title }} ({{ m1_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m1_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_dinner.dish2 %}<li> {{ m1_dinner.dish2.title }} ({{ m1_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m1_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_dinner.dish3 %}<li> {{ m1_dinner.dish3.title }} ({{ m1_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m1_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_dinner.dish4 %}<li> {{ m1_dinner.dish4.title }} ({{ m1_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m1_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_dinner.dish5 %}<li> {{ m1_dinner.dish5.title }} ({{ m1_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m1_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<!-- День 2: Сегодня -->
+
+<div class="bg-inf card shadow-sm rounded-3">
+
+<h3>Сегодня</h3>
+
+<strong>Завтрак: {{price2_breakfast}} руб.</strong>
+{% if m2_breakfast %}
+
+<ul>
+    
+    {% if m2_breakfast.dish1 %}<li> {{ m2_breakfast.dish1.title }} ({{ m2_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m2_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_breakfast.dish2 %}<li> {{ m2_breakfast.dish2.title }} ({{ m2_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m2_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_breakfast.dish3 %}<li> {{ m2_breakfast.dish3.title }} ({{ m2_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m2_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_breakfast.dish4 %}<li> {{ m2_breakfast.dish4.title }} ({{ m2_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m2_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_breakfast.dish5 %}<li> {{ m2_breakfast.dish5.title }} ({{ m2_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m2_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Обед: {{price2_lunch}} руб.</strong>
+{% if m2_lunch %}
+
+<ul>
+    
+    {% if m2_lunch.dish1 %}<li> {{ m2_lunch.dish1.title }} ({{ m2_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m2_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_lunch.dish2 %}<li> {{ m2_lunch.dish2.title }} ({{ m2_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m2_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_lunch.dish3 %}<li> {{ m2_lunch.dish3.title }} ({{ m2_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m2_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_lunch.dish4 %}<li> {{ m2_lunch.dish4.title }} ({{ m2_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m2_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_lunch.dish5 %}<li> {{ m2_lunch.dish5.title }} ({{ m2_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m2_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price2_dinner}} руб.</strong>
+{% if m2_dinner %}
+<ul>
+    {% if m2_dinner.dish1 %}<li> {{ m2_dinner.dish1.title }} ({{ m2_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m2_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_dinner.dish2 %}<li> {{ m2_dinner.dish2.title }} ({{ m2_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m2_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_dinner.dish3 %}<li> {{ m2_dinner.dish3.title }} ({{ m2_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m2_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_dinner.dish4 %}<li> {{ m2_dinner.dish4.title }} ({{ m2_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m2_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m2_dinner.dish5 %}<li> {{ m2_dinner.dish5.title }} ({{ m2_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m2_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+</div>
+
+<!-- День 3: Завтра -->
+<h3>Завтра</h3>
+<strong>Завтрак: {{price3_breakfast}} руб.</strong>
+{% if m3_breakfast %}
+<ul>
+    
+    {% if m3_breakfast.dish1 %}<li> {{ m3_breakfast.dish1.title }} ({{ m3_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m3_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_breakfast.dish2 %}<li> {{ m3_breakfast.dish2.title }} ({{ m3_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m3_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_breakfast.dish3 %}<li> {{ m3_breakfast.dish3.title }} ({{ m3_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m3_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_breakfast.dish4 %}<li> {{ m3_breakfast.dish4.title }} ({{ m3_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m3_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_breakfast.dish5 %}<li> {{ m3_breakfast.dish5.title }} ({{ m3_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m3_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Обед: {{price3_lunch}} руб.</strong>
+{% if m3_lunch %}
+<ul>
+    
+    {% if m3_lunch.dish1 %}<li> {{ m3_lunch.dish1.title }} ({{ m3_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m3_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_lunch.dish2 %}<li> {{ m3_lunch.dish2.title }} ({{ m3_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m3_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_lunch.dish3 %}<li> {{ m3_lunch.dish3.title }} ({{ m3_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m3_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_lunch.dish4 %}<li> {{ m3_lunch.dish4.title }} ({{ m3_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m3_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_lunch.dish5 %}<li> {{ m3_lunch.dish5.title }} ({{ m3_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m3_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price3_dinner}} руб.</strong>
+{% if m3_dinner %}
+<ul>
+    
+    {% if m3_dinner.dish1 %}<li> {{ m3_dinner.dish1.title }} ({{ m3_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m3_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_dinner.dish2 %}<li> {{ m3_dinner.dish2.title }} ({{ m3_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m3_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_dinner.dish3 %}<li> {{ m3_dinner.dish3.title }} ({{ m3_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m3_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_dinner.dish4 %}<li> {{ m3_dinner.dish4.title }} ({{ m3_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m3_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m3_dinner.dish5 %}<li> {{ m3_dinner.dish5.title }} ({{ m3_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m3_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<!-- День 4: Послезавтра -->
+<h3>Послезавтра</h3>
+
+<strong>Завтрак: {{price4_breakfast}} руб.</strong>
+{% if m4_breakfast %}
+<ul>
+    
+    {% if m4_breakfast.dish1 %}<li> {{ m4_breakfast.dish1.title }} ({{ m4_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m4_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_breakfast.dish2 %}<li> {{ m4_breakfast.dish2.title }} ({{ m4_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m4_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_breakfast.dish3 %}<li> {{ m4_breakfast.dish3.title }} ({{ m4_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m4_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_breakfast.dish4 %}<li> {{ m4_breakfast.dish4.title }} ({{ m4_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m4_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_breakfast.dish5 %}<li> {{ m4_breakfast.dish5.title }} ({{ m4_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m4_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Обед: {{price4_lunch}} руб.</strong>
+{% if m4_lunch %}
+<ul>
+    
+    {% if m4_lunch.dish1 %}<li> {{ m4_lunch.dish1.title }} ({{ m4_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m4_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_lunch.dish2 %}<li> {{ m4_lunch.dish2.title }} ({{ m4_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m4_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_lunch.dish3 %}<li> {{ m4_lunch.dish3.title }} ({{ m4_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m4_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_lunch.dish4 %}<li> {{ m4_lunch.dish4.title }} ({{ m4_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m4_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_lunch.dish5 %}<li> {{ m4_lunch.dish5.title }} ({{ m4_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m4_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price4_dinner}} руб.</strong>
+{% if m4_dinner %}
+<ul>
+    
+    {% if m4_dinner.dish1 %}<li> {{ m4_dinner.dish1.title }} ({{ m4_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m4_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_dinner.dish2 %}<li> {{ m4_dinner.dish2.title }} ({{ m4_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m4_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_dinner.dish3 %}<li> {{ m4_dinner.dish3.title }} ({{ m4_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m4_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_dinner.dish4 %}<li> {{ m4_dinner.dish4.title }} ({{ m4_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m4_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m4_dinner.dish5 %}<li> {{ m4_dinner.dish5.title }} ({{ m4_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m4_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<!-- День 5: Через 3 дня -->
+<h3>Через 3 дня</h3>
+
+<strong>Завтрак: {{price5_breakfast}} руб.</strong>
+{% if m5_breakfast %}
+<ul>
+
+    {% if m5_breakfast.dish1 %}<li> {{ m5_breakfast.dish1.title }} ({{ m5_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m5_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_breakfast.dish2 %}<li> {{ m5_breakfast.dish2.title }} ({{ m5_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m5_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_breakfast.dish3 %}<li> {{ m5_breakfast.dish3.title }} ({{ m5_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m5_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_breakfast.dish4 %}<li> {{ m5_breakfast.dish4.title }} ({{ m5_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m5_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_breakfast.dish5 %}<li> {{ m5_breakfast.dish5.title }} ({{ m5_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m5_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Обед: {{price5_lunch}} руб.</strong>
+{% if m5_lunch %}
+<ul>
+
+    {% if m5_lunch.dish1 %}<li> {{ m5_lunch.dish1.title }} ({{ m5_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m5_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_lunch.dish2 %}<li> {{ m5_lunch.dish2.title }} ({{ m5_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m5_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_lunch.dish3 %}<li> {{ m5_lunch.dish3.title }} ({{ m5_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m5_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_lunch.dish4 %}<li> {{ m5_lunch.dish4.title }} ({{ m5_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m5_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_lunch.dish5 %}<li> {{ m5_lunch.dish5.title }} ({{ m5_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m5_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price5_dinner}} руб.</strong>
+{% if m5_dinner %}
+<ul>
+    
+    {% if m5_dinner.dish1 %}<li> {{ m5_dinner.dish1.title }} ({{ m5_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m5_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_dinner.dish2 %}<li> {{ m5_dinner.dish2.title }} ({{ m5_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m5_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_dinner.dish3 %}<li> {{ m5_dinner.dish3.title }} ({{ m5_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m5_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_dinner.dish4 %}<li> {{ m5_dinner.dish4.title }} ({{ m5_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m5_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m5_dinner.dish5 %}<li> {{ m5_dinner.dish5.title }} ({{ m5_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m5_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<!-- День 6: Через 4 дня -->
+<h3>Через 4 дня</h3>
+<strong>Завтрак: {{price6_breakfast}} руб.</strong>
+{% if m6_breakfast %}
+<ul>
+    
+    {% if m6_breakfast.dish1 %}<li> {{ m6_breakfast.dish1.title }} ({{ m6_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m6_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_breakfast.dish2 %}<li> {{ m6_breakfast.dish2.title }} ({{ m6_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m6_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_breakfast.dish3 %}<li> {{ m6_breakfast.dish3.title }} ({{ m6_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m6_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_breakfast.dish4 %}<li> {{ m6_breakfast.dish4.title }} ({{ m6_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m6_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_breakfast.dish5 %}<li> {{ m6_breakfast.dish5.title }} ({{ m6_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m6_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Обед: {{price6_lunch}} руб.</strong>
+{% if m6_lunch %}
+<ul>
+    
+    {% if m6_lunch.dish1 %}<li> {{ m6_lunch.dish1.title }} ({{ m6_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m6_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_lunch.dish2 %}<li> {{ m6_lunch.dish2.title }} ({{ m6_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m6_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_lunch.dish3 %}<li> {{ m6_lunch.dish3.title }} ({{ m6_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m6_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_lunch.dish4 %}<li> {{ m6_lunch.dish4.title }} ({{ m6_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m6_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_lunch.dish5 %}<li> {{ m6_lunch.dish5.title }} ({{ m6_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m6_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price6_dinner}} руб.</strong>
+{% if m6_dinner %}
+<ul>
+    
+    {% if m6_dinner.dish1 %}<li> {{ m6_dinner.dish1.title }} ({{ m6_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m6_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_dinner.dish2 %}<li> {{ m6_dinner.dish2.title }} ({{ m6_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m6_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_dinner.dish3 %}<li> {{ m6_dinner.dish3.title }} ({{ m6_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m6_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_dinner.dish4 %}<li> {{ m6_dinner.dish4.title }} ({{ m6_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m6_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m6_dinner.dish5 %}<li> {{ m6_dinner.dish5.title }} ({{ m6_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m6_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<!-- День 7: Через 5 дней -->
+<h3>Через 5 дней</h3>
+
+<strong>Завтрак: {{price7_breakfast}} руб.</strong>
+{% if m7_breakfast %}
+<ul>
+    
+    {% if m7_breakfast.dish1 %}<li> {{ m7_breakfast.dish1.title }} ({{ m7_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m7_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_breakfast.dish2 %}<li> {{ m7_breakfast.dish2.title }} ({{ m7_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m7_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_breakfast.dish3 %}<li> {{ m7_breakfast.dish3.title }} ({{ m7_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m7_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_breakfast.dish4 %}<li> {{ m7_breakfast.dish4.title }} ({{ m7_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m7_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_breakfast.dish5 %}<li> {{ m7_breakfast.dish5.title }} ({{ m7_breakfast.dish5.cost }} руб.) <a href="{% url 'comment_page' m7_breakfast.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+
+<strong>Обед: {{price7_lunch}} руб.</strong>
+{% if m7_lunch %}
+<ul>
+    
+    {% if m7_lunch.dish1 %}<li> {{ m7_lunch.dish1.title }} ({{ m7_lunch.dish1.cost }} руб.) <a href="{% url 'comment_page' m7_lunch.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_lunch.dish2 %}<li> {{ m7_lunch.dish2.title }} ({{ m7_lunch.dish2.cost }} руб.) <a href="{% url 'comment_page' m7_lunch.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_lunch.dish3 %}<li> {{ m7_lunch.dish3.title }} ({{ m7_lunch.dish3.cost }} руб.) <a href="{% url 'comment_page' m7_lunch.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_lunch.dish4 %}<li> {{ m7_lunch.dish4.title }} ({{ m7_lunch.dish4.cost }} руб.) <a href="{% url 'comment_page' m7_lunch.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_lunch.dish5 %}<li> {{ m7_lunch.dish5.title }} ({{ m7_lunch.dish5.cost }} руб.) <a href="{% url 'comment_page' m7_lunch.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>{% endif %}
+
+<strong>Ужин: {{price7_dinner}} руб.</strong>
+{% if m7_dinner %}
+<ul>
+    
+    {% if m7_dinner.dish1 %}<li> {{ m7_dinner.dish1.title }} ({{ m7_dinner.dish1.cost }} руб.) <a href="{% url 'comment_page' m7_dinner.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_dinner.dish2 %}<li> {{ m7_dinner.dish2.title }} ({{ m7_dinner.dish2.cost }} руб.) <a href="{% url 'comment_page' m7_dinner.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_dinner.dish3 %}<li> {{ m7_dinner.dish3.title }} ({{ m7_dinner.dish3.cost }} руб.) <a href="{% url 'comment_page' m7_dinner.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_dinner.dish4 %}<li> {{ m7_dinner.dish4.title }} ({{ m7_dinner.dish4.cost }} руб.) <a href="{% url 'comment_page' m7_dinner.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m7_dinner.dish5 %}<li> {{ m7_dinner.dish5.title }} ({{ m7_dinner.dish5.cost }} руб.) <a href="{% url 'comment_page' m7_dinner.dish5.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+</ul>
+{% else %}
+<ul><li><p class="text-danger">Меню не заполнено</p></li></ul>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'main_page' %}" class="btn btn-primary btn-lg py-2 fw-bold"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
+</div>
+{% endblock %}
