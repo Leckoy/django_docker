@@ -65,7 +65,7 @@ class OrderStatus(models.Model):
         return self.description
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.FloatField()
     cost = models.DecimalField(max_digits=10, decimal_places=2)
