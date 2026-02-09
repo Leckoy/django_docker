@@ -41,7 +41,7 @@
                     {% if form.summa.errors %}
                         <div class="alert alert-danger mt-2">
                             {% for error in form.summa.errors %}
-                                    {{ error }}
+                                    <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
                             {% endfor %}
                         </div>
                     {% endif %}
