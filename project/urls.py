@@ -21,10 +21,11 @@ from cook.views import *
 from project import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('cook/', include('cook.urls')),
 	path("student/", include("student.urls")),
-	path("start/", include("main.urls"))
+	path("start/", include("main.urls")),
+	path("canadmin/", include("canadmin.urls"))
 
 ]
 if settings.DEBUG:
