@@ -1,7 +1,7 @@
 from django.db.models import Sum
 
 from django.http import HttpRequest, HttpResponseForbidden, HttpResponse
-from cook.models import Dish, Menu,Review, Stock
+from cook.models import Dish, Menu,Review, Stock, Composition
 from main.decorators import role_required
 from datetime import timedelta
 from rest_framework.views import APIView # type: ignore
@@ -154,7 +154,7 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
             order = form.save(commit=False)
             chosen_date = form.cleaned_data.get('date_of_meal')
             chosen_food_intake = form.cleaned_data.get('food_intake')
-            print(chosen_food_intake)
+
             menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=chosen_food_intake).first()
             if menu_for_day is None:
                 messages.error(request, "Меню на этот день не создано")
@@ -195,6 +195,9 @@ def Menu_view(request):
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
     student = request.user.student_profile
     now = timezone.now().date()
+
+    allergies = Allergy.objects.filter(student=student)
+
     m1_breakfast = Menu.objects.filter(date=now - timedelta(days=1), food_intake="Завтрак").first()
     m1_lunch = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Обед").first()
     m1_dinner = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Ужин").first()
@@ -302,6 +305,8 @@ def Menu_view(request):
         "m7_breakfast": m7_breakfast,
         "m7_lunch": m7_lunch,
         "m7_dinner": m7_dinner,
+
+        "allergies": allergies,
     })
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:

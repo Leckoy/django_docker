@@ -7,6 +7,16 @@
     <p>Ваш баланс: <strong>{{ balance }} руб.</strong></p>
 
     <hr>
+        {% if allergies %}
+        <div class="alert alert-danger" role="alert">
+            <h5>Будьте внимательны с этими продуктами:</h5>
+            <ul>
+            {% for allergy in allergies %}
+                <li>{{allergy.ingredient.title}}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
 
 <!-- День 1: Вчера -->
 <h3>Вчера</h3>
@@ -15,7 +25,7 @@
 
 <ul>
     
-    {% if m1_breakfast.dish1 %}<li> {{ m1_breakfast.dish1.title }} ({{ m1_breakfast.dish1.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
+    {% if m1_breakfast.dish1 %}<li> {{ m1_breakfast.dish1.title }} ({{ m1_breakfast.dish1.cost }} руб.) {% if m1_breakfast.dish1 in allergies %}{% endif %} <a href="{% url 'comment_page' m1_breakfast.dish1.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
     {% if m1_breakfast.dish2 %}<li> {{ m1_breakfast.dish2.title }} ({{ m1_breakfast.dish2.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish2.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
     {% if m1_breakfast.dish3 %}<li> {{ m1_breakfast.dish3.title }} ({{ m1_breakfast.dish3.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish3.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
     {% if m1_breakfast.dish4 %}<li> {{ m1_breakfast.dish4.title }} ({{ m1_breakfast.dish4.cost }} руб.) <a href="{% url 'comment_page' m1_breakfast.dish4.id %}" class="btn btn-outline-secondary py-1 mt-2">Отзыв</a></li>{% endif %}
