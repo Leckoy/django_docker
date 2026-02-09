@@ -5,6 +5,7 @@ from main.models import User
 class Ingredient(models.Model):
     title = models.CharField(max_length=255)
     amount = models.FloatField(default=0)
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
     picture = models.ImageField(upload_to="pictures/ingredients", null=True, blank=True)
 
     def __str__(self):
@@ -67,11 +68,10 @@ class OrderStatus(models.Model):
         return self.description
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.FloatField()
     cost = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.ForeignKey(OrderStatus, on_delete=models.PROTECT)
+    status = models.FloatField()
 
     def __str__(self):
 

@@ -25,6 +25,7 @@ class StudentOrderForm(forms.ModelForm):
         model = Purchases
         fields = [ 'date_of_meal', 'food_intake']
 
+
 class FeedBackForm(forms.Form):
     mark = forms.ChoiceField(
         choices=[

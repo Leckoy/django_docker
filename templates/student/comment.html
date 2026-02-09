@@ -1,29 +1,40 @@
 {% extends "base/base_student.html" %}
 {% load static %}
 
-{% block main%}<div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
-                   <div class="col">
-                       <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
-                           <div class="card-body">
-                               <h5>{{dish.title}}</h5>
-                               <form method="post" action="">
-                                   {% csrf_token %}
-                                   <select id="mark" name="mark">
-                                       <option value="1">1</option>
-                                       <option value="2">2</option>
-                                       <option value="3">3</option>
-                                       <option value="4">4</option>
-                                       <option value="5">5</option>
-                                   </select>
-                                   <label for="comment">Оставьте свой комментарий</label>
-                                   <input type="text" id="comment" name="comment" />
-                                   <button type="submit" id="comment-button"> Отправить </button>
-                               </form>
+{% block main %}
+<div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
+    <div class="col">
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+            <div class="card-body">
+                <h5>{{ dish.title }}</h5>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <select id="mark" name="mark">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="comment">Оставьте свой комментарий</label>
+                    <input type="text" id="comment" name="comment" />
+                    
+                    <div style="margin-top: 10px;">
+                        <button type="submit" id="comment-button">Отправить</button>
+                        <a href="{% url 'menu_page' %}">
+                            <button type="button">Назад к меню</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                           </div>
-
-                       </div>
-                       <a href="{% url 'menu_page' %}" class="btn btn-outline-secondary px-4">Назад к меню</a>
-                   </div>
-
-{% endblock%}
+<div class="mx-5 mt-4">
+    <hr>
+    <a href="{% url 'main_page' %}">
+        <button type="button">На главную</button>
+    </a>
+</div>
+{% endblock %}
