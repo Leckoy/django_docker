@@ -14,8 +14,8 @@
 	<div class="col " style="width: 2000px;">
 		<div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
 		<div class="card-body p-4">
-			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-menu-button-wide me-1"></i>Создать меню</h4>
-			<p class="card-text text-muted lh-base mb-4">Здесь вы можете просмотреть заказы продуктов поваров</p>
+			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-menu-button-wide me-1"></i>Запросы на продукты</h4>
+			<p class="card-text text-muted lh-base mb-4">Здесь вы можете подтвердить заказы поваров на ингридиенты</p>
 			<a href="{% url 'admin_view_orders' %}"><button class="btn btn-outline-color  w-100" type="submit">Перейти</button></a>
 		</div>
 		</div>
@@ -23,8 +23,8 @@
 	<div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Блюда</h4>
-            <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с существующими блюдами или добавить новые</p>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i>Статистика</h4>
+            <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с статистикой столовой</p>
             <a href="{% url 'dish' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
 	</div>
@@ -32,9 +32,18 @@
 	<div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Ингредиенты</h4>
-            <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с остатками на складе, а также списать использованные ингридиенты</p>
-            <a href="{% url 'ingredient' %}" class="btn btn-outline-color  w-100">Перейти</a>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i color='red'>Отчёты</h4>
+            <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с отчётами о действии пользователей</p>
+            <a href="{% url 'actions' %}" class="btn btn-outline-color  w-100">Перейти</a>
+        </div>
+    </div>
+	</div>
+    	<div class="col">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+        <div class="card-body p-4">
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Регистрация пользователей</h4>
+            <p class="card-text text-muted lh-base mb-4">Здесь вы можете зарегистрировать новых работников/студентов</p>
+            <a href="{% url 'registration_page' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
     </div>
 	</div>

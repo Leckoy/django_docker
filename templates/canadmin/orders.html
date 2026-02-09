@@ -1,4 +1,27 @@
+<table>
+    <tr>
+        <th>ID</th><th>Ингредиент</th><th>Количество</th><th>Стоимость</th><th>Статус</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.ingredient }}</td>
+        <td>{{ order.amount }}</td>
+        <td>{{ order.cost }}</td>
+        <td>{{ order.status }}</td>
+                <td>
+            <form method="post" action="{% url 'change_order_status' order.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="1">
+                <button type="submit" class="btn btn-success btn-sm">Одобрить</button>
+            </form>
+            <form method="post" action="{% url 'change_order_status' order.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="0">
+                <button type="submit" class="btn btn-danger btn-sm">Отклонить</button>
+            </form>
+        </td>
 
-    <br>
-    {{orders}}
-</div>
+    </tr>
+    {% endfor %}
+</table>

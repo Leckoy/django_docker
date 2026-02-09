@@ -11,6 +11,8 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, login, password=None, **extra_fields):
         if not login:
             raise ValueError("Login must be set")
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         user = self.model(login=login, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -19,12 +21,16 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, login, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
-
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
         # Assign default role for superuser
         admin_role, _ = Role.objects.get_or_create(title="Admin")
         extra_fields.setdefault('role', admin_role)
 
         return self.create_user(login, password, **extra_fields)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, verbose_name="ФИО пользователя")
