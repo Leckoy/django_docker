@@ -12,7 +12,8 @@ from rest_framework import status, generics
 from cook.models import Dish, Menu, Review, Stock, Ingredient
 from main.decorators import role_required
 from .models import Student, Purchases, Allergy
-from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm
+from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm,BuyAbonimentForm
+from decimal import Decimal
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -50,9 +51,6 @@ def top_up(request: HttpRequest) -> HttpResponse:
     context = {}
     return render(request, "student/top_up.html", context)
 
-def season_ticket(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/season_ticket.html", context)
 
 
 
@@ -93,7 +91,7 @@ def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
             'form': form,
             'dish': dish
         })
-@login_required
+
 def my_purchases_list(request):
     student_profile = get_object_or_404(Student, user=request.user)
     today = timezone.now().date()
@@ -143,56 +141,117 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
         if form.is_valid():
-
             chosen_date = form.cleaned_data.get('date_of_meal')
             food_intake = form.cleaned_data.get('food_intake')
+            
             menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=food_intake).first()
             
             if menu_for_day is None:
                 messages.error(request, f"Меню на {chosen_date} ({food_intake}) еще не сформировано.")
                 return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
 
-            duplicate_order = Purchases.objects.filter(
-                student=student,
-                date_of_meal=chosen_date,
-                food_intake=food_intake
-            ).exists()
 
-            if duplicate_order:
+            if Purchases.objects.filter(student=student, date_of_meal=chosen_date, food_intake=food_intake).exists():
                 messages.error(request, f"Ошибка: Вы уже оплатили {food_intake} на {chosen_date}!")
                 return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
 
 
-            price = menu_for_day.get_total_cost()
-
-
-            if student.money < price:
-                messages.error(request, f"Недостаточно средств. Стоимость: {price} руб. Ваш баланс: {student.money} руб.")
+            has_active_ticket = student.date and student.date >= chosen_date
+            
+            if has_active_ticket:
+                price = 0
+                payment_type = "Абонемент"
             else:
-                try:
-                    with transaction.atomic():
+                price = menu_for_day.get_total_cost()
 
+            if not has_active_ticket and student.money < price:
+                messages.error(request, f"Недостаточно средств. Стоимость: {price} руб. Ваш баланс: {student.money} руб.")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
+            
+            try:
+                with transaction.atomic():
+
+                    if not has_active_ticket:
                         student.money -= price
                         student.save()
 
-                        order = form.save(commit=False)
-                        order.student = student
-                        order.menu = menu_for_day
-                        order.deposited_money = price
-                        order.type_of_purchase = "Баланс"
-                        order.save()
+                    order = form.save(commit=False)
+                    order.student = student
+                    order.menu = menu_for_day
+                    order.deposited_money = price
+                    order.type_of_purchase = payment_type
+                    order.save()
 
-                        messages.success(request, f"Заказ на {food_intake} ({chosen_date}) успешно оплачен.")
-                        return redirect('main_page')
-                except Exception as e:
-                    messages.error(request, "Произошла техническая ошибка. Средства не списаны.")
+                    messages.success(request, f"Заказ успешно оформлен через {payment_type}.")
+                    return redirect('main_page')
+            except Exception as e:
+                messages.error(request, f"Техническая ошибка: {e}")
     else:
         form = StudentOrderForm()
-
+             
     return render(request, 'student/pay_onetime.html', {
         'form': form,
         'balance': student.money
     })
+
+
+
+
+def buy_season_ticket(request):
+    student = request.user.student_profile
+    money = student.money
+    if request.method == 'POST':
+        form = BuyAbonimentForm(request.POST)
+        if form.is_valid():
+            plan = int(form.cleaned_data.get('choise'))
+            
+            if not plan:
+                messages.error(request, "Выбран некорректный тариф.")
+                return redirect('season_ticket')
+            elif plan == 7:
+                price = Decimal(5000)
+                days_to_add = int(7)
+            elif plan == 14:
+                price = Decimal(10000)
+                days_to_add = int(14)
+            elif plan == 30:
+                price = Decimal(20000)
+                days_to_add = int(30)
+            elif plan == 90:
+                price = Decimal(60000)
+                days_to_add = int(90)
+            elif plan == 180:
+                price = Decimal(120000)
+                days_to_add = int(180)
+            elif plan == 270:
+                price = Decimal(150000)
+                days_to_add = int(270)
+            money = student.money
+            if money < price:
+                messages.error(request, f"Недостаточно средств. Стоимость тарифа: {price} руб.")
+            else:
+                money -= price
+
+                abdate= student.date
+                today = timezone.now().date()
+                if abdate is not None:
+                    if abdate > today :
+                        student.date = abdate + timedelta(days=days_to_add)
+                    else:
+                        student.date = today + timedelta(days=days_to_add)
+                else:
+                    student.date = today + timedelta(days=days_to_add)
+
+                student.save()
+                    
+                messages.success(request, f"Оплачено! Абонемент активен")
+                return redirect('main_page')
+        else:
+            messages.error(request, "Ошибка валидации формы. Попробуйте еще раз.")
+    else:
+        form = BuyAbonimentForm()
+
+    return render(request, 'student/season_ticket.html', {'form': form, 'student': student, 'aboba' : money})
 
 def Menu_view(request):
 

@@ -8,8 +8,9 @@ urlpatterns = [
     path("allergy/delete/<int:allergy_id>/", views.allergy_delete, name="allergy_delete"),
     path("top_up/", views.top_up, name="top_up"),
     path("pay_onetime/", views.pay_onetime, name="pay_onetime_page"),
-    path("season_ticket/", views.season_ticket, name="season_ticket_page"),
+
     path("comment/<int:dish_id>/", views.FeedBack, name="comment_page"),
     path('orders/daily/', my_purchases_list, name='student_orders_page'),
+    path('season_ticket/', views.buy_season_ticket, name='season_ticket_page'),
 
 ]

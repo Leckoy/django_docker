@@ -1,19 +1,124 @@
-{% extends "base/base_student.html" %}
-{% load static %}
+{% extends 'base/base_student.html' %}
 
 {% block main %}
-    <form method="post" action="{% url "main_page" %}">
-        {% csrf_token %}
-        <select id="season_ticket" name="season_ticket">
-            <option value="7_days">7 дней</option>
-            <option value="30_days">30 дней</option>
-            <option value="90_mounth">90 дней</option>
-        </select>
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-ticket-perforated"></i> Продление абонемента
+                    </h4>
+                </div>
 
-        <button type="submit" id="pay-button"> Оплатить </button>
-    </form>
-{% endblock %}
+                <div class="card-body p-4">
 
-{% block extra_js %}
-    <script src="{% static 'student/js/season_ticket.js' %}" defer></script>
+                    <div class="alert alert-info border-0" role="alert">
+                        <div class="d-flex align-items-center mb-2">
+                            
+                        </div>
+
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-wallet2 fs-5 me-2"></i>
+                            <div>
+                                <small class="text-muted d-block">Баланс</small>
+                                <strong class="text-success">{{ aboba }} ₽</strong>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-check fs-5 me-2"></i>
+                            <div>
+                                <small class="text-muted d-block">Активен до</small>
+                                {% if student.date %}
+                                <strong>{{ student.date|date:"d.m.Y" }}</strong>
+                                {% else %}
+                                <strong class="text-danger">Не активен</strong>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label for="{{ form.choise.id_for_label }}" class="form-label fw-bold">
+                                {{ form.choise.label }}
+                            </label>
+
+                            {{ form.choise }}
+
+                            {% if form.choise.errors %}
+                            <div class="text-danger small mt-2">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                {{ form.choise.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                                <i class="bi bi-credit-card"></i> Оплатить
+                            </button>
+                            <a href="{% url 'main_page' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="card-footer bg-light text-muted text-center small py-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Срок действия начнется с момента окончания текущего абонемента или с сегодняшнего дня
+                </div>
+            </div>
+
+            <div class="alert alert-light border mt-3 text-center small">
+                <i class="bi bi-lightbulb"></i>
+                <strong>Совет:</strong> Чем дольше период, тем выгоднее цена за день
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0;
+        font-weight: 600;
+    }
+
+    #plan {
+        border-color: #dee2e6;
+        padding: 0.75rem;
+    }
+
+        #plan:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+    .alert-info {
+        background-color: #f0f7ff;
+        border-color: #d1e7ff;
+    }
+</style>
 {% endblock %}

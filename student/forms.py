@@ -1,7 +1,26 @@
 from django import forms
-from .models import Purchases
+from .models import Purchases, Student
 from cook.models import Menu, Ingredient
 from .models import Allergy
+from decimal import Decimal
+
+class BuyAbonimentForm(forms.Form):
+    choise = forms.ChoiceField(
+        choices = [
+            ('7', 'Неделя — 5000 руб.'),
+            ('14', '2 недели — 10000 руб.'),
+            ('30', 'Месяц — 20000 руб.'),
+            ('90', '3 месяца — 60000 руб.'),
+            ('180', '6 месяцев — 120000 руб.'),
+            ('270', '9 месяцев — 150000 руб.'),
+        ],
+        label="План абонемента",
+        widget=forms.Select(attrs={
+            'id': 'plan',
+            'class': 'form-control'
+        })
+    )
+
 
 class StudentOrderForm(forms.ModelForm):
     FOOD_CHOICES = [
