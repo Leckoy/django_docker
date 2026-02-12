@@ -8,6 +8,7 @@ from django.http import HttpRequest,HttpResponseForbidden, HttpResponse
 from cook.models import *
 from .forms import *
 from django.db.models import Sum, Count
+from .get_state import *
 from student.models import Purchases
 
 # Create your views here.
@@ -51,7 +52,7 @@ def actions(request):
     purchases = Purchases.objects.all()
     if start_date and end_date:
         purchases = purchases.filter(date__range=[start_date, end_date])
-    print(purchases.values)
+    # print(purchases.values)
     total_orders = purchases.count()
     unique_students = len(list(purchases.values_list('student_id', flat=True).distinct()))
     total_attendance = purchases.filter(attendance=True).count()
@@ -68,3 +69,8 @@ def actions(request):
         "end_date": end_date,
     }
     return render(request, 'canadmin/actions.html', context)
+def statistic(request):
+    purchases = Purchases.objects.all()
+    context={"gets": gets_dict(purchases)}
+    # print(purchases.values("date"))
+    return render(request, "canadmin/statistic.html", context)
