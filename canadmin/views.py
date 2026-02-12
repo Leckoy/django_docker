@@ -7,6 +7,8 @@ from main.decorators import login_required
 from django.http import HttpRequest,HttpResponseForbidden, HttpResponse
 from cook.models import *
 from .forms import *
+from django.db.models import Sum, Count
+from student.models import Purchases
 
 # Create your views here.
 def main_page(request):
@@ -42,5 +44,27 @@ def registration(request):
         form = UserRegistrationForm()
     return render(request, "canadmin/registration.html", {"form": form})
 def actions(request):
-    actions = {}
-    return render(request, 'canadmin/actions.html', context=actions)
+    # Attributes attendance, date, date_of_meal, deposited_money, food_intake, id, menu, menu_id, student, student_id, type_of_purchase
+    start_date = request.GET.get("start")
+    end_date = request.GET.get("end")
+
+    purchases = Purchases.objects.all()
+    if start_date and end_date:
+        purchases = purchases.filter(date__range=[start_date, end_date])
+    print(purchases.values)
+    total_orders = purchases.count()
+    unique_students = len(list(purchases.values_list('student_id', flat=True).distinct()))
+    total_attendance = purchases.filter(attendance=True).count()
+    total_money = purchases.aggregate(Sum("deposited_money"))["deposited_money__sum"] or 0
+
+    context = {
+        "total_buyers": unique_students,
+        "total_orders": total_orders,
+        "total_attendance": total_attendance,
+        "unique_students": unique_students,
+        "total_attendance": total_attendance,
+        "total_money": total_money,
+        "start_date": start_date,
+        "end_date": end_date,
+    }
+    return render(request, 'canadmin/actions.html', context)

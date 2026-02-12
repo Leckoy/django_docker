@@ -1,0 +1,26 @@
+{% extends "base/base_cook.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Статистика заказов</h2>
+    {% if start_date and end_date %}
+        <p>Период: {{ start_date }} — {{ end_date }}</p>
+    {% else %}
+        <p>Период не выбран (показаны все данные)</p>
+    {% endif %}
+
+    <ul class="list-group mt-3">
+        <li class="list-group-item">Количество покупателей: {{ total_buyers }}</li>
+        <li class="list-group-item">Количество посещений (съели): {{ total_attendance }}</li>
+        <li class="list-group-item">Общая сумма оплат: {{ total_money }} руб.</li>
+    </ul>
+
+    <form method="get" class="mt-4">
+        <label for="start">Начало периода:</label>
+        <input type="date" id="start" name="start" class="form-control" required>
+        <label for="end" class="mt-2">Конец периода:</label>
+        <input type="date" id="end" name="end" class="form-control" required>
+        <button type="submit" class="btn btn-primary mt-3">Показать статистику</button>
+    </form>
+</div>
+{% endblock %}
