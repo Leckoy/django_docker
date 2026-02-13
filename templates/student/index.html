@@ -40,16 +40,15 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="row mt-4 mb-5"> 
-    <div class="col-12 text-center">
-        <h3 class="mb-4">Всё готово к оформлению</h3> 
-        <button type="button" class="btn btn-success btn-lg px-5 py-3 fw-bold">
-            <i class="bi bi-cart-check me-2"></i>
-            Оформить заказ
-        </button>
+<div class="col">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+      <div class="card-body">
+        <h4 class="card-title"><i class="bi bi-bank me-1"></i>Пополнить счет</h4>
+        <p class="card-text">Здесь вы можете пополнить ваш счет</p>
+        <a href="{% url 'top_up' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
+      </div>
     </div>
+  </div>
 </div>
 
 {% endblock %}

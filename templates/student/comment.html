@@ -2,28 +2,48 @@
 {% load static %}
 
 {% block main %}
-<div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
+<div class="row row-cols-1 g-4 mx-5" style="margin-top: 90px;">
     <div class="col">
         <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
             <div class="card-body">
-                <h5>{{ dish.title }}</h5>
-                <form method="post" action="">
+                <h4 class="card-title mb-4">
+                    <i class="bi bi-chat-left-text me-2"></i>Оставте свой отзыв о блюде "{{ dish.title }}"
+                </h4>
+                
+                <form method="post" class="mt-3">
                     {% csrf_token %}
-                    <select id="mark" name="mark">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <label for="comment">Оставьте свой комментарий</label>
-                    <input type="text" id="comment" name="comment" />
+                    <div class="mb-4">
+                        <label for="mark" class="form-label fw-semibold mb-2">
+                            <i class="bi bi-star me-1"></i>Оценка блюда
+                        </label>
+                        <div class="d-flex align-items-center">
+                            <select id="mark" name="mark" class="form-select border-color w-auto">
+                                <option value="5">⭐⭐⭐⭐⭐ Отлично (5)</option>
+                                <option value="4">⭐⭐⭐⭐ Хорошо (4)</option>
+                                <option value="3">⭐⭐⭐ Удовлетворительно (3)</option>
+                                <option value="2">⭐⭐ Плохо (2)</option>
+                                <option value="1">⭐ Очень плохо (1)</option>
+                            </select>
+                            <span class="ms-3 text-muted">
+                                <small>Выберите оценку от 1 до 5</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comment" class="form-label fw-semibold mb-2">
+                            <i class="bi bi-pencil me-1"></i>Ваш комментарий
+                        </label>
+                        <textarea id="comment" name="comment" class="form-control border-color" rows="4" 
+                                placeholder="Расскажите, что вам понравилось или не понравилось в этом блюде..."></textarea>
+                    </div>
                     
-                    <div style="margin-top: 10px;">
-                        <button type="submit" id="comment-button">Отправить</button>
-                        <a href="{% url 'menu_page' %}">
-                            <button type="button">Назад к меню</button>
-                        </a>
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <button type="submit" id="comment-button" class="btn btn-success px-4 py-2 fw-bold">
+                            <i class="bi bi-send-check me-2"></i>Отправить отзыв
+                        </button>
+
+                        <a href="{% url 'main_page' %}" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
                     </div>
                 </form>
             </div>
@@ -31,8 +51,4 @@
     </div>
 </div>
 
-<div class="mx-5 mt-4">
-    <hr>
-   
-</div>
 {% endblock %}

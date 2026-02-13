@@ -26,11 +26,15 @@ from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-
 from django.utils import timezone
-from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm
+from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm, TopUpForm
 
 from .forms import StudentOrderForm, FeedBackForm
+from decimal import Decimal
+
+def dish_or_0(dish: Dish):
+    return dish.cost if dish else Decimal('0')
+
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -64,6 +68,8 @@ def allergy(request: HttpRequest) -> HttpResponse:
         "form":form,
         "allergies": Allergy.objects.filter(student=student)
         })
+
+
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
     context = {}
 
@@ -104,8 +110,28 @@ def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
     return redirect("allergy_page")
 
 def top_up(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/top_up.html", context)
+
+    try:
+        student = request.user.student_profile
+    except:
+        return redirect('login')
+
+    if request.method == "POST":
+        form = TopUpForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                summa = form.cleaned_data['summa']
+                if not isinstance(summa, Decimal):
+                    summa = Decimal(str(summa))
+                    
+                student.money += summa
+                student.save()
+
+                return redirect('main_page') 
+    else:
+        form = TopUpForm()
+
+    return render(request, "student/top_up.html", {"form": form})
 
 def season_ticket(request: HttpRequest) -> HttpResponse:
     context = {}
@@ -122,21 +148,20 @@ def comment(request: HttpRequest, dish_id) -> HttpResponse:
 def pay_onetime(request: HttpRequest) -> HttpResponse:
 
     student = request.user.student_profile
-    
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             chosen_date = form.cleaned_data.get('date_of_meal')
-            menu_for_day = Menu.objects.filter(date=chosen_date).first()
+            chosen_food_intake = form.cleaned_data.get('food_intake')
+            print(chosen_food_intake)
+            menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=chosen_food_intake).first()
             if menu_for_day is None:
                 messages.error(request, "Меню на этот день не создано")
                 return render(request, 'student/pay_onetime.html', {'form': form})
 
-            menu_for_day = Menu.objects.filter(date=chosen_date).first()
             order.menu_id = menu_for_day.id
-            price = menu_for_day.dish1.cost + menu_for_day.dish2.cost + menu_for_day.dish3.cost + menu_for_day.dish4.cost +menu_for_day.dish5.cost
-
+            price = dish_or_0(menu_for_day.dish1) + dish_or_0(menu_for_day.dish2) + dish_or_0(menu_for_day.dish3) + dish_or_0(menu_for_day.dish4) + dish_or_0(menu_for_day.dish5)
 
             if student.money < price:
                 messages.error(request, "У вас недостаточно денег на балансе!")
@@ -159,7 +184,7 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
 
     return render(request, 'student/pay_onetime.html', {
         'form': form,
-        'balance': student.money
+        'balance': student.money,
     })
 
 
@@ -170,40 +195,113 @@ def Menu_view(request):
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
     student = request.user.student_profile
     now = timezone.now().date()
-    m1 = Menu.objects.filter(date=now - timedelta(days=1)).first()
-    print(m1)
-    print(now)
-    m2 = Menu.objects.filter(date=now).first()
-    m3 = Menu.objects.filter(date=now + timedelta(days=1)).first()
-    m4 = Menu.objects.filter(date=now + timedelta(days=2)).first()
-    m5 = Menu.objects.filter(date=now + timedelta(days=3)).first()
-    m6 = Menu.objects.filter(date=now + timedelta(days=4)).first()
-    m7 = Menu.objects.filter(date=now + timedelta(days=5)).first()
+    m1_breakfast = Menu.objects.filter(date=now - timedelta(days=1), food_intake="Завтрак").first()
+    m1_lunch = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Обед").first()
+    m1_dinner = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Ужин").first()
 
-    price1 = m1.get_total_cost() if m1 else 0
-    price2 = m2.get_total_cost() if m2 else 0
-    price3 = m3.get_total_cost() if m3 else 0
-    price4 = m4.get_total_cost() if m4 else 0
-    price5 = m5.get_total_cost() if m5 else 0
-    price6 = m6.get_total_cost() if m6 else 0
-    price7 = m7.get_total_cost() if m7 else 0
+    m2_breakfast = Menu.objects.filter(date=now, food_intake="Завтрак").first()
+    m2_lunch = Menu.objects.filter(date=now,food_intake="Обед").first()
+    m2_dinner = Menu.objects.filter(date=now,food_intake="Ужин").first()
+
+    m3_breakfast = Menu.objects.filter(date=now + timedelta(days=1), food_intake="Завтрак").first()
+    m3_lunch = Menu.objects.filter(date=now + timedelta(days=1),food_intake="Обед").first()
+    m3_dinner = Menu.objects.filter(date=now + timedelta(days=1),food_intake="Ужин").first()
+
+    m4_breakfast = Menu.objects.filter(date=now + timedelta(days=2), food_intake="Завтрак").first()
+    m4_lunch = Menu.objects.filter(date=now + timedelta(days=2),food_intake="Обед").first()
+    m4_dinner = Menu.objects.filter(date=now + timedelta(days=2),food_intake="Ужин").first()
+    
+    m5_breakfast = Menu.objects.filter(date=now + timedelta(days=3), food_intake="Завтрак").first()
+    m5_lunch = Menu.objects.filter(date=now + timedelta(days=3),food_intake="Обед").first()
+    m5_dinner = Menu.objects.filter(date=now + timedelta(days=3),food_intake="Ужин").first()
+
+    m6_breakfast = Menu.objects.filter(date=now + timedelta(days=4), food_intake="Завтрак").first()
+    m6_lunch = Menu.objects.filter(date=now + timedelta(days=4),food_intake="Обед").first()
+    m6_dinner = Menu.objects.filter(date=now + timedelta(days=4),food_intake="Ужин").first()
+
+    m7_breakfast = Menu.objects.filter(date=now + timedelta(days=5), food_intake="Завтрак").first()
+    m7_lunch = Menu.objects.filter(date=now + timedelta(days=5),food_intake="Обед").first()
+    m7_dinner = Menu.objects.filter(date=now + timedelta(days=5),food_intake="Ужин").first()
+
+    price1_breakfast = m1_breakfast.get_total_cost() if m1_breakfast else 0
+    price1_lunch = m1_lunch.get_total_cost() if m1_lunch else 0
+    price1_dinner = m1_dinner.get_total_cost() if m1_dinner else 0
+
+    price2_breakfast = m2_breakfast.get_total_cost() if m2_breakfast else 0
+    price2_lunch = m2_lunch.get_total_cost() if m2_lunch else 0
+    price2_dinner = m2_dinner.get_total_cost() if m2_dinner else 0
+
+    price3_breakfast = m3_breakfast.get_total_cost() if m3_breakfast else 0
+    price3_lunch = m3_lunch.get_total_cost() if m3_lunch else 0
+    price3_dinner = m3_dinner.get_total_cost() if m3_dinner else 0
+
+    price4_breakfast = m4_breakfast.get_total_cost() if m4_breakfast else 0
+    price4_lunch = m4_lunch.get_total_cost() if m4_lunch else 0
+    price4_dinner = m4_dinner.get_total_cost() if m4_dinner else 0
+
+    price5_breakfast = m5_breakfast.get_total_cost() if m5_breakfast else 0
+    price5_lunch = m5_lunch.get_total_cost() if m5_lunch else 0
+    price5_dinner = m5_dinner.get_total_cost() if m5_dinner else 0
+
+    price6_breakfast = m6_breakfast.get_total_cost() if m6_breakfast else 0
+    price6_lunch = m6_lunch.get_total_cost() if m6_lunch else 0
+    price6_dinner = m6_dinner.get_total_cost() if m6_dinner else 0
+
+    price7_breakfast = m7_breakfast.get_total_cost() if m7_breakfast else 0
+    price7_lunch = m7_lunch.get_total_cost() if m7_lunch else 0
+    price7_dinner = m7_dinner.get_total_cost() if m7_dinner else 0
 
     return render(request, 'student/menu.html', {
         'balance': student.money,
-        'price1': price1, 
-        'price2': price2, 
-        'price3': price3,
-        'price4': price4, 
-        'price5': price5, 
-        'price6': price6, 
-        'price7': price7,
-        'm1': m1, 
-        'm2': m2, 
-        'm3': m3, 
-        'm4': m4, 
-        'm5': m5, 
-        'm6': m6, 
-        'm7': m7,
+        "price1_breakfast": price1_breakfast,
+        "price1_lunch": price1_lunch,
+        "price1_dinner": price1_dinner,
+        "price2_breakfast": price2_breakfast,
+        "price2_lunch": price2_lunch,
+        "price2_dinner": price2_dinner,
+        "price3_breakfast": price3_breakfast,
+        "price3_lunch": price3_lunch,
+        "price3_dinner": price3_dinner,
+        "price4_breakfast": price4_breakfast,
+        "price4_lunch": price4_lunch,
+        "price4_dinner": price4_dinner,
+        "price5_breakfast": price5_breakfast,
+        "price5_lunch": price5_lunch,
+        "price5_dinner": price5_dinner,
+        "price6_breakfast": price6_breakfast,
+        "price6_lunch": price6_lunch,
+        "price6_dinner": price6_dinner,
+        "price7_breakfast": price7_breakfast,
+        "price7_lunch": price7_lunch,
+        "price7_dinner": price7_dinner,
+        
+        "m1_breakfast": m1_breakfast,
+        "m1_lunch": m1_lunch,
+        "m1_dinner": m1_dinner,
+        
+        "m2_breakfast": m2_breakfast,
+        "m2_lunch": m2_lunch,
+        "m2_dinner": m2_dinner,
+        
+        "m3_breakfast": m3_breakfast,
+        "m3_lunch": m3_lunch,
+        "m3_dinner": m3_dinner,
+        
+        "m4_breakfast": m4_breakfast,
+        "m4_lunch": m4_lunch,
+        "m4_dinner": m4_dinner,
+        
+        "m5_breakfast": m5_breakfast,
+        "m5_lunch": m5_lunch,
+        "m5_dinner": m5_dinner,
+        
+        "m6_breakfast": m6_breakfast,
+        "m6_lunch": m6_lunch,
+        "m6_dinner": m6_dinner,
+
+        "m7_breakfast": m7_breakfast,
+        "m7_lunch": m7_lunch,
+        "m7_dinner": m7_dinner,
     })
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:

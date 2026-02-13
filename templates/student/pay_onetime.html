@@ -15,6 +15,7 @@
                     <div class="alert alert-info border-0 bg-light">
                         <i class="bi bi-wallet2 me-2"></i>
                         Ваш текущий баланс: <strong class="text-primary">{{ balance }} руб.</strong>
+                        стоимость
                     </div>
 
                     {% if messages %}
@@ -35,7 +36,7 @@
                         <label class="form-label"><strong>{{ field.label }}</strong></label>
                         {{ field }}
                         {% if field.errors %}
-                            <div class="text-danger small">
+                            <div class="alert alert-danger mt-2 small">
                                 <i class="bi bi-exclamation-triangle me-1"></i>
                                 {% for error in field.errors %}{{ error }}{% endfor %}
                             </div>
