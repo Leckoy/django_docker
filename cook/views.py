@@ -77,8 +77,6 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
 
 
 def IngredientUse(request: HttpRequest) -> HttpResponse:
-    context = {}
-
     if not request.user.is_authenticated:
         return redirect('login')
     user_role_id = request.user.role.id if request.user.role else None
@@ -111,8 +109,6 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
 
 
 def IngredientOrder(request: HttpRequest) -> HttpResponse:
-    context = {}
-
     if not request.user.is_authenticated:
         return redirect('login')
     user_role_id = request.user.role.id if request.user.role else None
@@ -146,8 +142,6 @@ def IngredientOrder(request: HttpRequest) -> HttpResponse:
 
 
 def DishAdd(request: HttpRequest) -> HttpResponse:
-    context = {}
-
     if not request.user.is_authenticated:
         return redirect('login')
     user_role_id = request.user.role.id if request.user.role else None
@@ -178,6 +172,8 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
         })
 
 def Menu_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user_role_id = request.user.role.id if request.user.role else None
     if user_role_id != 3: 
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")

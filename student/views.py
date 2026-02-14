@@ -35,17 +35,38 @@ def dish_or_0(dish: Dish):
     return dish.cost if dish else Decimal('0')
 
 
-@role_required('Student')
+
+
 def index(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
+    
     context = {"title": "Главная страница"}
     return render(request, "student/index.html", context)
 
 def menu(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
+    
     context = {"dishes" : Dish.objects.all()}
     return render(request, "student/menu.html", context)
 
 def allergy(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
 
+    
     student = request.user.student_profile
     if request.method == "POST":
 
@@ -70,7 +91,12 @@ def allergy(request: HttpRequest) -> HttpResponse:
 
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
-    context = {}
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
 
     student = request.user.student_profile
     dish = get_object_or_404(Dish, id=dish_id)
@@ -100,6 +126,13 @@ def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
 
 
 def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
+    
     try:
         student = request.user.student_profile
         allergy = get_object_or_404(Allergy, id=allergy_id, student=student)
@@ -109,7 +142,13 @@ def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
     return redirect("allergy_page")
 
 def top_up(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
 
+    
     try:
         student = request.user.student_profile
     except:
@@ -133,10 +172,18 @@ def top_up(request: HttpRequest) -> HttpResponse:
     return render(request, "student/top_up.html", {"form": form})
 
 def season_ticket(request: HttpRequest) -> HttpResponse:
+    
     context = {}
     return render(request, "student/season_ticket.html", context)
 
 def comment(request: HttpRequest, dish_id) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
+    
     dish = get_object_or_404(Dish, id=dish_id)
     return render(request, "student/comment.html", {"dish": dish})
 
@@ -145,7 +192,13 @@ def comment(request: HttpRequest, dish_id) -> HttpResponse:
 
 
 def pay_onetime(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
 
+    
     student = request.user.student_profile
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
@@ -188,8 +241,8 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
 
 
 def Menu_view(request):
-
-
+    if not request.user.is_authenticated:
+        return redirect('login')
     user_role_id = request.user.role.id if request.user.role else None
     if user_role_id != 2: 
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
@@ -308,7 +361,11 @@ def Menu_view(request):
     })
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
-    context = {}
+    if not request.user.is_authenticated:
+        return redirect('login')
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 2: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
 
     student = request.user.student_profile
     dish = get_object_or_404(Dish, id=dish_id)
