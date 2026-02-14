@@ -13,7 +13,9 @@ path("dishes/", views.DishAdd, name='dish'),
 path("order/", views.IngredientOrder, name='order'),
 
 
-path('main/', index, name="main_cook_page")
+path('main/', index, name="main_cook_page"),
+
+path('menu/', Menu_view, name="menu")
 
 
 ]

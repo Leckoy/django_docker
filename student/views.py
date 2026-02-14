@@ -26,7 +26,6 @@ from .models import Student, Purchases, Allergy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.utils import timezone
 from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm, TopUpForm
 
 from .forms import StudentOrderForm, FeedBackForm
@@ -190,13 +189,16 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
 
 def Menu_view(request):
 
+
     user_role_id = request.user.role.id if request.user.role else None
     if user_role_id != 2: 
-        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
+
     student = request.user.student_profile
     now = timezone.now().date()
 
-    allergies = Allergy.objects.filter(student=student)
+    allergies_object = Allergy.objects.filter(student=student)
+    allergies_ingredients = [allergy.ingredient for allergy in allergies_object]
 
     m1_breakfast = Menu.objects.filter(date=now - timedelta(days=1), food_intake="Завтрак").first()
     m1_lunch = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Обед").first()
@@ -254,59 +256,76 @@ def Menu_view(request):
     price7_lunch = m7_lunch.get_total_cost() if m7_lunch else 0
     price7_dinner = m7_dinner.get_total_cost() if m7_dinner else 0
 
+    days_data = [
+        {
+            'title': 'Вчера',
+            'meals': [
+                    {'name': 'Завтрак', 'menu':m1_breakfast, 'price': price1_breakfast},
+                    {'name': 'Обед', 'menu': m1_lunch, 'price': price1_lunch},
+                    {'name': 'Ужин', 'menu': m1_dinner, 'price': price1_dinner},
+                ],
+        },
+
+        {
+            'title': 'Сегодня',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m2_breakfast, 'price': price2_breakfast},
+                {'name': 'Обед', 'menu': m2_lunch, 'price': price2_lunch},
+                {'name': 'Ужин', 'menu': m2_dinner, 'price': price2_dinner},
+            ],
+        },
+
+        {
+            'title': 'Завтра',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m3_breakfast, 'price': price3_breakfast},
+                {'name': 'Обед', 'menu': m3_lunch, 'price': price3_lunch},
+                {'name': 'Ужин', 'menu': m3_dinner, 'price': price3_dinner},
+            ],
+        },
+
+        {
+            'title': 'Послезавтра',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m4_breakfast, 'price': price4_breakfast},
+                {'name': 'Обед', 'menu': m4_lunch, 'price': price4_lunch},
+                {'name': 'Ужин', 'menu': m4_dinner, 'price': price4_dinner},
+            ],
+        },
+
+        {
+            'title': 'Через 3 дня',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m5_breakfast, 'price': price5_breakfast},
+                {'name': 'Обед', 'menu': m5_lunch, 'price': price5_lunch},
+                {'name': 'Ужин', 'menu': m5_dinner, 'price': price5_dinner},
+            ],
+        },
+
+        {
+            'title': 'Через 4 дня',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m6_breakfast, 'price': price6_breakfast},
+                {'name': 'Обед', 'menu': m6_lunch, 'price': price6_lunch},
+                {'name': 'Ужин', 'menu': m6_dinner, 'price': price6_dinner},
+            ],
+        },
+
+        {
+            'title': 'Через 3 дня',
+            'meals': [
+                {'name': 'Завтрак', 'menu':m7_breakfast, 'price': price7_breakfast},
+                {'name': 'Обед', 'menu': m7_lunch, 'price': price7_lunch},
+                {'name': 'Ужин', 'menu': m7_dinner, 'price': price7_dinner},
+            ],
+        }
+    ]
+                
+
     return render(request, 'student/menu.html', {
         'balance': student.money,
-        "price1_breakfast": price1_breakfast,
-        "price1_lunch": price1_lunch,
-        "price1_dinner": price1_dinner,
-        "price2_breakfast": price2_breakfast,
-        "price2_lunch": price2_lunch,
-        "price2_dinner": price2_dinner,
-        "price3_breakfast": price3_breakfast,
-        "price3_lunch": price3_lunch,
-        "price3_dinner": price3_dinner,
-        "price4_breakfast": price4_breakfast,
-        "price4_lunch": price4_lunch,
-        "price4_dinner": price4_dinner,
-        "price5_breakfast": price5_breakfast,
-        "price5_lunch": price5_lunch,
-        "price5_dinner": price5_dinner,
-        "price6_breakfast": price6_breakfast,
-        "price6_lunch": price6_lunch,
-        "price6_dinner": price6_dinner,
-        "price7_breakfast": price7_breakfast,
-        "price7_lunch": price7_lunch,
-        "price7_dinner": price7_dinner,
-        
-        "m1_breakfast": m1_breakfast,
-        "m1_lunch": m1_lunch,
-        "m1_dinner": m1_dinner,
-        
-        "m2_breakfast": m2_breakfast,
-        "m2_lunch": m2_lunch,
-        "m2_dinner": m2_dinner,
-        
-        "m3_breakfast": m3_breakfast,
-        "m3_lunch": m3_lunch,
-        "m3_dinner": m3_dinner,
-        
-        "m4_breakfast": m4_breakfast,
-        "m4_lunch": m4_lunch,
-        "m4_dinner": m4_dinner,
-        
-        "m5_breakfast": m5_breakfast,
-        "m5_lunch": m5_lunch,
-        "m5_dinner": m5_dinner,
-        
-        "m6_breakfast": m6_breakfast,
-        "m6_lunch": m6_lunch,
-        "m6_dinner": m6_dinner,
-
-        "m7_breakfast": m7_breakfast,
-        "m7_lunch": m7_lunch,
-        "m7_dinner": m7_dinner,
-
-        "allergies": allergies,
+        'days': days_data,
+        "allergies": allergies_ingredients,
     })
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:

@@ -1,19 +1,9 @@
 {% extends 'base/base_cook.html' %}
 
 {% block content %}
-<nav class="navbar bg-top text-white fixed-top border-bottom py-2" style="min-height: 60px;">
-    <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
-        <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
-            {{ user.name }}
-        </p>
-		<a href="{% url 'logout' %}" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Выйти из аккаунта</a>
-        
-    </div>
-</nav>
-
 <div class="row row-cols-1 row-cols-md-2 g-4 mx-5" style="margin-top: 90px;">
-	<div class="col " style="width: 2000px;">
-		<div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+	<div class="col">
+		<div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 h-100">
 		<div class="card-body p-4">
 			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-menu-button-wide me-1"></i>Создать меню</h4>
 			<p class="card-text text-muted lh-base mb-4">Здесь вы можете создать меню</p>
@@ -22,7 +12,7 @@
 		</div>
 	</div>
 	<div class="col">
-    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 h-100">
         <div class="card-body p-4">
             <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Блюда</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с существующими блюдами или добавить новые</p>
@@ -31,7 +21,7 @@
 	</div>
     </div>
 	<div class="col">
-    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 h-100">
         <div class="card-body p-4">
             <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Ингредиенты</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с остатками на складе, а также списать использованные ингридиенты</p>
@@ -39,26 +29,16 @@
         </div>
     </div>
 	</div>
+    <div class="col">
+		<div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 h-100">
+		<div class="card-body p-4">
+			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-menu-button-wide me-1"></i>Меню</h4>
+			<p class="card-text text-muted lh-base mb-4">Здесь вы можете посмотреть меню</p>
+			<a href="{% url 'menu' %}"><button class="btn btn-outline-color  w-100" type="submit">Перейти</button></a>
+		</div>
+		</div>
+	</div>
 </div>
 </div>
 
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    .border-color {
-        border-color: #b5c6f5 !important;
-    }
-    .btn-outline-color {
-        color: #010849;
-        border-color: #2652ca;
-    }
-    .btn-outline-color:hover {
-        background-color: #2652ca;
-        color: white;
-    }
-	.bg-top{
-		background-color: #4252e6;
-	}
-</style>
 {% endblock %}

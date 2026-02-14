@@ -26,6 +26,9 @@ class Dish(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_ingredients(self):
+        return [ingr for ingr in self.ingredients.all()]
 
 class Composition(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
@@ -45,9 +48,13 @@ class Menu(models.Model):
     def __str__(self):
         return f"Меню на {self.date} ({self.food_intake})"
         return self.name
+    
     def get_total_cost(self):
         dishes = [self.dish1, self.dish2, self.dish3, self.dish4, self.dish5]
         return sum(dish.cost for dish in dishes if dish)
+    
+    def get_dishes(self):
+        return [self.dish1, self.dish2, self.dish3, self.dish4, self.dish5]
 
 
 
