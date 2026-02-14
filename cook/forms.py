@@ -7,7 +7,6 @@ class CreateMenuForm(forms.ModelForm):
     FOOD_CHOICES = [
         ('Завтрак', 'Завтрак'),
         ('Обед', 'Обед'),
-        ('Ужин', 'Ужин'),
     ]
     
     food_intake = forms.ChoiceField(
