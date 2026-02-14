@@ -23,18 +23,20 @@
                 <td>{{ order.cost }}</td>
                 <td>{{ order.status }}</td>
                 <td>
+                    {% if order.status != 1 %}
                     <div class="d-flex gap-2">
                         <form method="post" action="{% url 'change_order_status' order.id %}">
                             {% csrf_token %}
-                            <input type="hidden" name="status" value="1">
+                            <input type="hidden" name="status">
                             <button type="submit" class="btn btn-success btn-sm">Одобрить</button>
                         </form>
                         <form method="post" action="{% url 'change_order_status' order.id %}">
                             {% csrf_token %}
-                            <input type="hidden" name="status" value="0">
-                            <button type="submit" class="btn btn-danger btn-sm">Отклонить</button>
                         </form>
                     </div>
+                    {% else %}
+                    Одобрено
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

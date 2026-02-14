@@ -22,9 +22,14 @@ def vieworders(request: HttpRequest) -> HttpResponse:
 @require_POST
 def change_order_status(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
-    new_status = request.POST.get("status")
-    if new_status:
-        order.status = new_status
+    if order.status != 1:
+        ingred_id = order.ingredient_id
+        ingred = get_object_or_404(Ingredient, pk=ingred_id)
+        ingred.amount += order.amount
+        ingred.save()
+        # new_status = request.POST.get("status")
+        # if new_status:
+        order.status = 1
         order.save()
     return redirect('admin_view_orders')
 # @login_required('Admin')
