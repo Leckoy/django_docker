@@ -9,6 +9,6 @@ urlpatterns = [
     # path('view_log', views.Log, name='view_log')
     # post
     path('orders/change/<int:order_id>/', views.change_order_status, name='change_order_status'),
-    path("registration/", views.registration, name="registration_page"),
+    path("registration/", views.registration, name="admin_registration_page"),
     path('actions/', views.actions, name='actions')
 ]
