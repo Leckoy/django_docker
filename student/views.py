@@ -1,40 +1,19 @@
-from django.db.models import Sum
-
-from django.http import HttpRequest, HttpResponseForbidden, HttpResponse
-from cook.models import Dish, Menu,Review, Stock
-from main.decorators import role_required
-from datetime import timedelta
-from rest_framework.views import APIView # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status, generics # type: ignore
-from django.db import transaction, IntegrityError
-
-from django.http import HttpRequest, HttpResponse
-from cook.models import Dish, Menu, Review, Stock, Ingredient
-from main.decorators import role_required
-
-from django.utils import timezone
-from django.shortcuts import get_object_or_404
-
-from rest_framework.views import APIView # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status, generics # type: ignore
-
-from django.db import transaction
-
-from .models import Student, Purchases, Allergy
-from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm, TopUpForm
-
-from .forms import StudentOrderForm, FeedBackForm
+from django.db import transaction, IntegrityError
+from datetime import timedelta
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
+from cook.models import Dish, Menu, Review, Stock, Ingredient
+from main.decorators import role_required
+from .models import Student, Purchases, Allergy
+from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm,BuyAbonimentForm
 from decimal import Decimal
-
-def dish_or_0(dish: Dish):
-    return dish.cost if dish else Decimal('0')
-
 
 @role_required('Student')
 def index(request: HttpRequest) -> HttpResponse:
@@ -68,6 +47,21 @@ def allergy(request: HttpRequest) -> HttpResponse:
         "form":form,
         "allergies": Allergy.objects.filter(student=student)
         })
+def top_up(request: HttpRequest) -> HttpResponse:
+    context = {}
+    return render(request, "student/top_up.html", context)
+
+
+
+
+def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
+    try:
+        student = request.user.student_profile
+        allergy = get_object_or_404(Allergy, id=allergy_id, student=student)
+        allergy.delete()
+    except:
+        pass
+    return redirect("allergy_page")
 
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
@@ -98,95 +92,166 @@ def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
             'dish': dish
         })
 
-
-
-def allergy_delete(request: HttpRequest, allergy_id)-> HttpResponse:
-    try:
-        student = request.user.student_profile
-        allergy = get_object_or_404(Allergy, id=allergy_id, student=student)
-        allergy.delete()
-    except:
-        pass
-    return redirect("allergy_page")
-
-def top_up(request: HttpRequest) -> HttpResponse:
-
-    try:
-        student = request.user.student_profile
-    except:
-        return redirect('login')
+def my_purchases_list(request):
+    student_profile = get_object_or_404(Student, user=request.user)
+    today = timezone.now().date()
 
     if request.method == "POST":
-        form = TopUpForm(request.POST)
-        if form.is_valid():
-            with transaction.atomic():
-                summa = form.cleaned_data['summa']
-                if not isinstance(summa, Decimal):
-                    summa = Decimal(str(summa))
-                    
-                student.money += summa
-                student.save()
+        purchase_id = request.POST.get("purchase_id")
+        purchase = get_object_or_404(Purchases, id=purchase_id, student=student_profile)
 
-                return redirect('main_page') 
-    else:
-        form = TopUpForm()
+        if not purchase.attendance:
+            purchase.attendance = True
+            purchase.save()
 
-    return render(request, "student/top_up.html", {"form": form})
+            menu = purchase.menu
+            dishes = [menu.dish1, menu.dish2, menu.dish3, menu.dish4, menu.dish5]
 
-def season_ticket(request: HttpRequest) -> HttpResponse:
-    context = {}
-    return render(request, "student/season_ticket.html", context)
+            for dish in dishes:
+                if dish:
+                    stock_item, created = Stock.objects.get_or_create(
+                        dish=dish,
+                        date=today,
+                        defaults={
+                            'amount_cooked': 0, 
+                            'amount_sold': 1,
+                            'expiration_date': today
+                        }
+                    )
+                    if not created:
+                        stock_item.amount_sold = F('amount_sold') + 1
+                        stock_item.save()
+            
+        return redirect('student_orders_page')
 
-def comment(request: HttpRequest, dish_id) -> HttpResponse:
-    dish = get_object_or_404(Dish, id=dish_id)
-    return render(request, "student/comment.html", {"dish": dish})
+    orders = Purchases.objects.filter(student=student_profile).order_by('-date_of_meal')
+
+    return render(request, 'student/my_orders.html', {
+        'orders': orders,
+        'today': today
+    })
 
 
 
 
 
 def pay_onetime(request: HttpRequest) -> HttpResponse:
-
     student = request.user.student_profile
+    
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
             chosen_date = form.cleaned_data.get('date_of_meal')
-            chosen_food_intake = form.cleaned_data.get('food_intake')
-            print(chosen_food_intake)
-            menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=chosen_food_intake).first()
+            food_intake = form.cleaned_data.get('food_intake')
+            
+            menu_for_day = Menu.objects.filter(date=chosen_date, food_intake=food_intake).first()
+            
             if menu_for_day is None:
-                messages.error(request, "Меню на этот день не создано")
-                return render(request, 'student/pay_onetime.html', {'form': form})
+                messages.error(request, f"Меню на {chosen_date} ({food_intake}) еще не сформировано.")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
 
-            order.menu_id = menu_for_day.id
-            price = dish_or_0(menu_for_day.dish1) + dish_or_0(menu_for_day.dish2) + dish_or_0(menu_for_day.dish3) + dish_or_0(menu_for_day.dish4) + dish_or_0(menu_for_day.dish5)
 
-            if student.money < price:
-                messages.error(request, "У вас недостаточно денег на балансе!")
+            if Purchases.objects.filter(student=student, date_of_meal=chosen_date, food_intake=food_intake).exists():
+                messages.error(request, f"Ошибка: Вы уже оплатили {food_intake} на {chosen_date}!")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
+
+
+            has_active_ticket = student.date and student.date >= chosen_date
+            
+            if has_active_ticket:
+                price = 0
+                payment_type = "Абонемент"
             else:
-                with transaction.atomic():
-                    student.money -= price
-                    student.save()
-                    
-                    order.student = student
-                    order.deposited_money = price
-                    order.type_of_purchase = "Баланс"
+                price = menu_for_day.get_total_cost()
 
+            if not has_active_ticket and student.money < price:
+                messages.error(request, f"Недостаточно средств. Стоимость: {price} руб. Ваш баланс: {student.money} руб.")
+                return render(request, 'student/pay_onetime.html', {'form': form, 'balance': student.money})
+            
+            try:
+                with transaction.atomic():
+
+                    if not has_active_ticket:
+                        student.money -= price
+                        student.save()
+
+                    order = form.save(commit=False)
+                    order.student = student
+                    order.menu = menu_for_day
+                    order.deposited_money = price
+                    order.type_of_purchase = payment_type
                     order.save()
 
-                    
-                    messages.success(request, f"Заказ на {order.food_intake} успешно оформлен!")
-                    return redirect('main_page') 
+                    messages.success(request, f"Заказ успешно оформлен через {payment_type}.")
+                    return redirect('main_page')
+            except Exception as e:
+                messages.error(request, f"Техническая ошибка: {e}")
     else:
         form = StudentOrderForm()
-
+             
     return render(request, 'student/pay_onetime.html', {
         'form': form,
-        'balance': student.money,
+        'balance': student.money
     })
 
+
+
+
+def buy_season_ticket(request):
+    student = request.user.student_profile
+    money = student.money
+    if request.method == 'POST':
+        form = BuyAbonimentForm(request.POST)
+        if form.is_valid():
+            plan = int(form.cleaned_data.get('choise'))
+            
+            if not plan:
+                messages.error(request, "Выбран некорректный тариф.")
+                return redirect('season_ticket')
+            elif plan == 7:
+                price = Decimal(5000)
+                days_to_add = int(7)
+            elif plan == 14:
+                price = Decimal(10000)
+                days_to_add = int(14)
+            elif plan == 30:
+                price = Decimal(20000)
+                days_to_add = int(30)
+            elif plan == 90:
+                price = Decimal(60000)
+                days_to_add = int(90)
+            elif plan == 180:
+                price = Decimal(120000)
+                days_to_add = int(180)
+            elif plan == 270:
+                price = Decimal(150000)
+                days_to_add = int(270)
+            money = student.money
+            if money < price:
+                messages.error(request, f"Недостаточно средств. Стоимость тарифа: {price} руб.")
+            else:
+                money -= price
+
+                abdate= student.date
+                today = timezone.now().date()
+                if abdate is not None:
+                    if abdate > today :
+                        student.date = abdate + timedelta(days=days_to_add)
+                    else:
+                        student.date = today + timedelta(days=days_to_add)
+                else:
+                    student.date = today + timedelta(days=days_to_add)
+
+                student.save()
+                    
+                messages.success(request, f"Оплачено! Абонемент активен")
+                return redirect('main_page')
+        else:
+            messages.error(request, "Ошибка валидации формы. Попробуйте еще раз.")
+    else:
+        form = BuyAbonimentForm()
+
+    return render(request, 'student/season_ticket.html', {'form': form, 'student': student, 'aboba' : money})
 
 def Menu_view(request):
 
@@ -195,113 +260,40 @@ def Menu_view(request):
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
     student = request.user.student_profile
     now = timezone.now().date()
-    m1_breakfast = Menu.objects.filter(date=now - timedelta(days=1), food_intake="Завтрак").first()
-    m1_lunch = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Обед").first()
-    m1_dinner = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Ужин").first()
+    m1 = Menu.objects.filter(date=now - timedelta(days=1)).first()
+    print(m1)
+    print(now)
+    m2 = Menu.objects.filter(date=now).first()
+    m3 = Menu.objects.filter(date=now + timedelta(days=1)).first()
+    m4 = Menu.objects.filter(date=now + timedelta(days=2)).first()
+    m5 = Menu.objects.filter(date=now + timedelta(days=3)).first()
+    m6 = Menu.objects.filter(date=now + timedelta(days=4)).first()
+    m7 = Menu.objects.filter(date=now + timedelta(days=5)).first()
 
-    m2_breakfast = Menu.objects.filter(date=now, food_intake="Завтрак").first()
-    m2_lunch = Menu.objects.filter(date=now,food_intake="Обед").first()
-    m2_dinner = Menu.objects.filter(date=now,food_intake="Ужин").first()
-
-    m3_breakfast = Menu.objects.filter(date=now + timedelta(days=1), food_intake="Завтрак").first()
-    m3_lunch = Menu.objects.filter(date=now + timedelta(days=1),food_intake="Обед").first()
-    m3_dinner = Menu.objects.filter(date=now + timedelta(days=1),food_intake="Ужин").first()
-
-    m4_breakfast = Menu.objects.filter(date=now + timedelta(days=2), food_intake="Завтрак").first()
-    m4_lunch = Menu.objects.filter(date=now + timedelta(days=2),food_intake="Обед").first()
-    m4_dinner = Menu.objects.filter(date=now + timedelta(days=2),food_intake="Ужин").first()
-    
-    m5_breakfast = Menu.objects.filter(date=now + timedelta(days=3), food_intake="Завтрак").first()
-    m5_lunch = Menu.objects.filter(date=now + timedelta(days=3),food_intake="Обед").first()
-    m5_dinner = Menu.objects.filter(date=now + timedelta(days=3),food_intake="Ужин").first()
-
-    m6_breakfast = Menu.objects.filter(date=now + timedelta(days=4), food_intake="Завтрак").first()
-    m6_lunch = Menu.objects.filter(date=now + timedelta(days=4),food_intake="Обед").first()
-    m6_dinner = Menu.objects.filter(date=now + timedelta(days=4),food_intake="Ужин").first()
-
-    m7_breakfast = Menu.objects.filter(date=now + timedelta(days=5), food_intake="Завтрак").first()
-    m7_lunch = Menu.objects.filter(date=now + timedelta(days=5),food_intake="Обед").first()
-    m7_dinner = Menu.objects.filter(date=now + timedelta(days=5),food_intake="Ужин").first()
-
-    price1_breakfast = m1_breakfast.get_total_cost() if m1_breakfast else 0
-    price1_lunch = m1_lunch.get_total_cost() if m1_lunch else 0
-    price1_dinner = m1_dinner.get_total_cost() if m1_dinner else 0
-
-    price2_breakfast = m2_breakfast.get_total_cost() if m2_breakfast else 0
-    price2_lunch = m2_lunch.get_total_cost() if m2_lunch else 0
-    price2_dinner = m2_dinner.get_total_cost() if m2_dinner else 0
-
-    price3_breakfast = m3_breakfast.get_total_cost() if m3_breakfast else 0
-    price3_lunch = m3_lunch.get_total_cost() if m3_lunch else 0
-    price3_dinner = m3_dinner.get_total_cost() if m3_dinner else 0
-
-    price4_breakfast = m4_breakfast.get_total_cost() if m4_breakfast else 0
-    price4_lunch = m4_lunch.get_total_cost() if m4_lunch else 0
-    price4_dinner = m4_dinner.get_total_cost() if m4_dinner else 0
-
-    price5_breakfast = m5_breakfast.get_total_cost() if m5_breakfast else 0
-    price5_lunch = m5_lunch.get_total_cost() if m5_lunch else 0
-    price5_dinner = m5_dinner.get_total_cost() if m5_dinner else 0
-
-    price6_breakfast = m6_breakfast.get_total_cost() if m6_breakfast else 0
-    price6_lunch = m6_lunch.get_total_cost() if m6_lunch else 0
-    price6_dinner = m6_dinner.get_total_cost() if m6_dinner else 0
-
-    price7_breakfast = m7_breakfast.get_total_cost() if m7_breakfast else 0
-    price7_lunch = m7_lunch.get_total_cost() if m7_lunch else 0
-    price7_dinner = m7_dinner.get_total_cost() if m7_dinner else 0
+    price1 = m1.get_total_cost() if m1 else 0
+    price2 = m2.get_total_cost() if m2 else 0
+    price3 = m3.get_total_cost() if m3 else 0
+    price4 = m4.get_total_cost() if m4 else 0
+    price5 = m5.get_total_cost() if m5 else 0
+    price6 = m6.get_total_cost() if m6 else 0
+    price7 = m7.get_total_cost() if m7 else 0
 
     return render(request, 'student/menu.html', {
         'balance': student.money,
-        "price1_breakfast": price1_breakfast,
-        "price1_lunch": price1_lunch,
-        "price1_dinner": price1_dinner,
-        "price2_breakfast": price2_breakfast,
-        "price2_lunch": price2_lunch,
-        "price2_dinner": price2_dinner,
-        "price3_breakfast": price3_breakfast,
-        "price3_lunch": price3_lunch,
-        "price3_dinner": price3_dinner,
-        "price4_breakfast": price4_breakfast,
-        "price4_lunch": price4_lunch,
-        "price4_dinner": price4_dinner,
-        "price5_breakfast": price5_breakfast,
-        "price5_lunch": price5_lunch,
-        "price5_dinner": price5_dinner,
-        "price6_breakfast": price6_breakfast,
-        "price6_lunch": price6_lunch,
-        "price6_dinner": price6_dinner,
-        "price7_breakfast": price7_breakfast,
-        "price7_lunch": price7_lunch,
-        "price7_dinner": price7_dinner,
-        
-        "m1_breakfast": m1_breakfast,
-        "m1_lunch": m1_lunch,
-        "m1_dinner": m1_dinner,
-        
-        "m2_breakfast": m2_breakfast,
-        "m2_lunch": m2_lunch,
-        "m2_dinner": m2_dinner,
-        
-        "m3_breakfast": m3_breakfast,
-        "m3_lunch": m3_lunch,
-        "m3_dinner": m3_dinner,
-        
-        "m4_breakfast": m4_breakfast,
-        "m4_lunch": m4_lunch,
-        "m4_dinner": m4_dinner,
-        
-        "m5_breakfast": m5_breakfast,
-        "m5_lunch": m5_lunch,
-        "m5_dinner": m5_dinner,
-        
-        "m6_breakfast": m6_breakfast,
-        "m6_lunch": m6_lunch,
-        "m6_dinner": m6_dinner,
-
-        "m7_breakfast": m7_breakfast,
-        "m7_lunch": m7_lunch,
-        "m7_dinner": m7_dinner,
+        'price1': price1, 
+        'price2': price2, 
+        'price3': price3,
+        'price4': price4, 
+        'price5': price5, 
+        'price6': price6, 
+        'price7': price7,
+        'm1': m1, 
+        'm2': m2, 
+        'm3': m3, 
+        'm4': m4, 
+        'm5': m5, 
+        'm6': m6, 
+        'm7': m7,
     })
 
 def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:

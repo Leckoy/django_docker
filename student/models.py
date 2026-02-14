@@ -3,11 +3,11 @@ from django.db import models
 class Student(models.Model):
     user = models.OneToOneField('main.User', on_delete=models.CASCADE, related_name="student_profile")
     money = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    student_class = models.CharField(max_length=50, db_column='class')
+    date = models.DateField(null=True, blank=True, verbose_name="Дата окончания абонемента")
 
     def __str__(self):
-        return f"{self.user.name} ({self.student_class}) — {self.money} руб."
-
+        status = f"Абонемент до {self.date}" if self.date else "Нет абонемента"
+        return f"{self.user.name} — {self.money} руб. ({status})"
 class Purchases(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     menu = models.ForeignKey('cook.Menu', on_delete=models.CASCADE)

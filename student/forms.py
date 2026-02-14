@@ -1,8 +1,26 @@
 from django import forms
-from .models import Purchases, Allergy, Student
+from .models import Purchases, Student
 from cook.models import Menu, Ingredient
+from .models import Allergy
 from decimal import Decimal
-from django.core.validators import MinValueValidator
+
+class BuyAbonimentForm(forms.Form):
+    choise = forms.ChoiceField(
+        choices = [
+            ('7', 'Неделя — 5000 руб.'),
+            ('14', '2 недели — 10000 руб.'),
+            ('30', 'Месяц — 20000 руб.'),
+            ('90', '3 месяца — 60000 руб.'),
+            ('180', '6 месяцев — 120000 руб.'),
+            ('270', '9 месяцев — 150000 руб.'),
+        ],
+        label="План абонемента",
+        widget=forms.Select(attrs={
+            'id': 'plan',
+            'class': 'form-control'
+        })
+    )
+
 
 class StudentOrderForm(forms.ModelForm):
     FOOD_CHOICES = [
@@ -19,10 +37,7 @@ class StudentOrderForm(forms.ModelForm):
     
     date_of_meal = forms.DateField(
         label="Дата заказа",
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-        error_messages={
-                'invalid': 'Введите корректную дату',
-                }
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
     )
 
     class Meta:
@@ -57,7 +72,7 @@ class FeedBackForm(forms.Form):
         max_length=500,
         required=False
     )
-
+   
 
 class AddAllergyForm(forms.ModelForm):
     ingredient = forms.ModelChoiceField(
@@ -74,43 +89,4 @@ class AddAllergyForm(forms.ModelForm):
     class Meta:
         model = Allergy
         fields = ["ingredient"]
-
-class TopUpForm(forms.Form):
-    requisites = forms.IntegerField(
-        label="реквизиты",
-        validators=[MinValueValidator(1000000000000000)],
-        widget=forms.NumberInput(
-            attrs={
-                'type': 'int', 
-                'class': 'form-control',
-                'placeholder': 'Введите 16 цифр карты',
-                'pattern': '[0-9]{16}',
-                'maxlength': '16'
-                }),
-    error_messages={
-        'required': 'Введите номер карты',
-        'invalid': 'Введите 16 цифр (только числа)',
-        'min_value': 'Номер карты должен содержать 16 цифр'
-    }
-    )
-
-    summa = forms.DecimalField(
-        label="Сумма пополнения",
-        min_value=Decimal('0.01'),
-        max_value=Decimal('100000'),
-        decimal_places=2,
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите сумму пополнения',
-                'min': '0.01',
-                'step': '0.01'
-                }),
-        error_messages={
-            'min_value': 'Сумма должна быть больше 0',
-            'required': 'Введите сумму пополнения',
-            'invalid': 'Введите корректную сумму',
-            'min_value': 'Сумма слишком большая'
-        }
-    )
 
