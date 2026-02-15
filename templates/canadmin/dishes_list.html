@@ -1,0 +1,41 @@
+<h1>Dish List</h1>
+    <div class="text-center mt-3">
+        <a href="{% url 'admin_main_page' %}" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
+    </div>
+<a href="{% url 'dishadd' %}">Добавить блюдо</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Picture</th>
+            <th>Title</th>
+            <th>Weight (g)</th>
+            <th>Cost</th>
+            <th>Type</th>
+            <th>Ingredients</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dish in dishes %}
+        <tr>
+            <td>
+                {% if dish.picture %}
+                    <img src="{{ dish.picture.url }}" alt="{{ dish.title }}" width="80">
+                {% else %}
+                    No image
+                {% endif %}
+            </td>
+            <td>{{ dish.title }}</td>
+            <td>{{ dish.weight }}</td>
+            <td>{{ dish.cost }}</td>
+            <td>{{ dish.dish_type }}</td>
+            <td>
+                {% for ingredient in dish.get_ingredients %}
+                    {{ ingredient.title }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    No ingredients
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

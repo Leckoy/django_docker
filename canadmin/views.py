@@ -104,3 +104,24 @@ def ingredadd(request):
 def ingredient_list(request):
     ingredients = Ingredient.objects.all().order_by('title')
     return render(request, 'canadmin/ingredient_list.html', {'ingredients': ingredients})
+def dishes_list(request):
+    dishes = Dish.objects.all().order_by('title')
+    return render(request, 'canadmin/dishes_list.html', {'dishes': dishes})
+def dishadd(request):
+    if request.method == 'POST':
+        form = AddNewDishForm(request.POST, request.FILES)
+        if form.is_valid():
+            dish = form.save(commit=False)
+            formset = CompositionFormSet(request.POST, instance=dish)
+            if formset.is_valid():
+                dish.save()
+                for subform in formset:
+                    if subform.cleaned_data.get('ingredient') and subform.cleaned_data.get('weight'):
+                        comp = subform.save(commit=False)
+                        comp.dish = dish
+                        comp.save()
+                return redirect('dishes_list')
+    else:
+        form = AddNewDishForm()
+        formset = CompositionFormSet()
+    return render(request, 'canadmin/adddish.html', {'form': form, 'formset': formset})

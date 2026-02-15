@@ -13,5 +13,7 @@ urlpatterns = [
     path('actions/', views.actions, name='actions'),
     path('ingredients/', views.ingredient_list, name='ingredient_list'),
     path('ingredients/add', views.ingredadd, name='ingredadd'),
+    path('dishes/', views.dishes_list, name='dishes_list'),
+    path('dish/add', views.dishadd, name='dishadd'),
 
 ]
