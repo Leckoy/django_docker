@@ -75,7 +75,9 @@ def actions(request):
     }
     return render(request, 'canadmin/actions.html', context)
 def statistic(request):
+    
     purchases = Purchases.objects.all()
-    context={"gets": gets_dict(purchases)}
+    ords = Order.objects.all()
+    context={"gets": gets_dict(purchases), "ords": paid_dict(purchases, ords)}
     # print(purchases.values("date"))
     return render(request, "canadmin/statistic.html", context)
