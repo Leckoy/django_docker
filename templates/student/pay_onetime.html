@@ -13,9 +13,14 @@
                     </h2>
                     
                     <div class="alert alert-info border-0 bg-light">
-                        <i class="bi bi-wallet2 me-2"></i>
-                        Ваш текущий баланс: <strong class="text-primary">{{ balance }} руб.</strong>
-                        стоимость
+                        <div class="mb-2">
+                            <i class="bi bi-wallet2 me-2"></i>
+                            Ваш текущий баланс: <strong class="text-primary">{{ balance }} руб.</strong>
+                        </div>
+                        <div>
+                            <span class="fw-bold">Стоимость:</span>
+                            <span id="order-price" class="fw-bold text-primary ms-1">— ₽</span>
+                        </div>
                     </div>
 
                     {% if messages %}
@@ -28,9 +33,9 @@
                         {% endfor %}
                     {% endif %}
 
-            <form method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
-                
+
                 {% for field in form %}
                     <div class="mb-3">
                         <label class="form-label"><strong>{{ field.label }}</strong></label>
@@ -62,5 +67,40 @@
 {% block extra_js %}
 <script>
     console.log("Страница заказа загружена");
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    const dateField = document.getElementById('id_date_of_meal');
+    const intakeField = document.getElementById('id_food_intake');
+    const priceDisplay = document.getElementById('order-price');
+
+    function updatePrice() {
+        const date = dateField.value;
+        const intake = intakeField.value;
+
+        if (!date || !intake) {
+            priceDisplay.textContent = '— ₽';
+            return;
+        }
+
+        const url = window.location.pathname + `?get_price=1&date_of_meal=${encodeURIComponent(date)}&food_intake=${encodeURIComponent(intake)}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.price !== undefined && data.price !== null) {
+                    priceDisplay.textContent = data.price + ' ₽';
+                } else {
+                    priceDisplay.textContent = 'Меню на этот день еще не создано';
+                }
+            })
+            .catch(() => {
+                priceDisplay.textContent = 'Ошибка';
+            });
+    }
+
+    dateField.addEventListener('change', updatePrice);
+    intakeField.addEventListener('change', updatePrice);
+    updatePrice(); // при загрузке, если поля уже заполнены
+});
 </script>
 {% endblock %}

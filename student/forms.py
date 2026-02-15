@@ -1,7 +1,6 @@
 from django import forms
-from .models import Purchases, Student
+from .models import Purchases, Student, Allergy
 from cook.models import Menu, Ingredient
-from .models import Allergy
 from decimal import Decimal
 from django.core.validators import MinValueValidator
 
@@ -27,18 +26,21 @@ class StudentOrderForm(forms.ModelForm):
     FOOD_CHOICES = [
         ('Завтрак', 'Завтрак'),
         ('Обед', 'Обед'),
-        ('Ужин', 'Ужин'),
     ]
     
     food_intake = forms.ChoiceField(
         choices=FOOD_CHOICES, 
         label="Выберите прием пищи",
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
     
     date_of_meal = forms.DateField(
         label="Дата заказа",
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        error_messages={
+                'invalid': 'Введите корректную дату',
+                'required': 'Выберите дату'
+                }
     )
 
     class Meta:
@@ -80,7 +82,9 @@ class AddAllergyForm(forms.ModelForm):
         queryset=Ingredient.objects.all(),
         label="Выберите аллерген",
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Выберите ингредиент"
+        error_messages={
+        'required': 'Пожалуйста, выберите аллерген из списка.',  
+    }
     )
 
     def __init__(self, *args, **kwargs):
@@ -126,7 +130,7 @@ class TopUpForm(forms.Form):
             'min_value': 'Сумма должна быть больше 0',
             'required': 'Введите сумму пополнения',
             'invalid': 'Введите корректную сумму',
-            'min_value': 'Сумма слишком большая'
+            'max_value': 'Сумма должна быть меньше 100000'
         }
     )
 
