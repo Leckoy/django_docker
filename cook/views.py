@@ -272,7 +272,7 @@ def Menu_view(request):
         },
 
         {
-            'title': 'Через 3 дня',
+            'title': 'Через 5 дней',
             'meals': [
                 {'name': 'Завтрак', 'menu':m7_breakfast, 'price': price7_breakfast},
                 {'name': 'Обед', 'menu': m7_lunch, 'price': price7_lunch},

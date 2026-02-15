@@ -1,124 +1,83 @@
 {% extends 'base/base_student.html' %}
 
 {% block main %}
-<div class="container mt-5 pt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-ticket-perforated"></i> Продление абонемента
-                    </h4>
+<div class="container-fluid" style="margin-top: 90px;">
+    <div class="mx-5">
+        <h1 class="mb-4">Покупка абонемента</h1>
+
+
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+            <div class="card-body p-4">
+
+                <div class="d-flex flex-wrap gap-4 mb-4 pb-3 border-bottom border-color border-opacity-25">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-wallet2 fs-4 me-3 text-primary"></i>
+                        <div>
+                            <small class="text-muted d-block">Баланс</small>
+                            <strong class="fs-5">{{ aboba }} ₽</strong>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar-check fs-4 me-3 text-primary"></i>
+                        <div>
+                            <small class="text-muted d-block">Активен до</small>
+                            {% if student.date %}
+                                <strong class="fs-5">{{ student.date|date:"d.m.Y" }}</strong>
+                            {% else %}
+                                <strong class="fs-5 text-danger">Не активен</strong>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-body p-4">
-
-                    <div class="alert alert-info border-0" role="alert">
-                        <div class="d-flex align-items-center mb-2">
-                            
-                        </div>
-
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bi bi-wallet2 fs-5 me-2"></i>
-                            <div>
-                                <small class="text-muted d-block">Баланс</small>
-                                <strong class="text-success">{{ aboba }} ₽</strong>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-calendar-check fs-5 me-2"></i>
-                            <div>
-                                <small class="text-muted d-block">Активен до</small>
-                                {% if student.date %}
-                                <strong>{{ student.date|date:"d.m.Y" }}</strong>
-                                {% else %}
-                                <strong class="text-danger">Не активен</strong>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-
-                    {% if messages %}
+                {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0" role="alert">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                        <div class="alert alert-danger alert-dismissible fade show border-0" role="alert">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     {% endfor %}
-                    {% endif %}
+                {% endif %}
 
+                <form method="post" action="">
+                    {% csrf_token %}
 
-                    <form method="post" action="">
-                        {% csrf_token %}
-
-                        <div class="mb-4">
-                            <label for="{{ form.choise.id_for_label }}" class="form-label fw-bold">
-                                {{ form.choise.label }}
-                            </label>
-
-                            {{ form.choise }}
-
-                            {% if form.choise.errors %}
+                    <div class="mb-4">
+                        <label for="{{ form.choise.id_for_label }}" class="form-label fw-bold">
+                            {{ form.choise.label }}
+                        </label>
+                        {{ form.choise }}
+                        {% if form.choise.errors %}
                             <div class="text-danger small mt-2">
                                 <i class="bi bi-exclamation-triangle"></i>
                                 {{ form.choise.errors }}
                             </div>
-                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold">
+                            <i class="bi bi-credit-card me-2"></i>Оплатить
+                        </button>
+                        <div class="d-grid mt-2">
+                        <a href="{% url 'main_page' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
                         </div>
-
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg fw-bold">
-                                <i class="bi bi-credit-card"></i> Оплатить
-                            </button>
-                            <a href="{% url 'main_page' %}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Отмена
-                            </a>
-                        </div>
-                    </form>
-                </div>
-
-
-                <div class="card-footer bg-light text-muted text-center small py-3">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Срок действия начнется с момента окончания текущего абонемента или с сегодняшнего дня
-                </div>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <div class="alert alert-light border mt-3 text-center small">
-                <i class="bi bi-lightbulb"></i>
-                <strong>Совет:</strong> Чем дольше период, тем выгоднее цена за день
+<div class="mt-4 d-flex flex-column gap-3 text-center">
+            <div class="p-3 border-2 border-color border-opacity-25 rounded-3 bg-light bg-opacity-10">
+                <i class="bi bi-info-circle me-2 text-primary"></i>
+                <span class="small">Срок действия начнется с момента окончания текущего абонемента или с сегодняшнего дня</span>
+            </div>
+            <div class="p-3 border-2 border-color border-opacity-25 rounded-3 bg-light bg-opacity-10">
+                <i class="bi bi-lightbulb me-2 text-warning"></i>
+                <span class="small"><strong>Совет:</strong> Чем дольше период, тем выгоднее цена за день</span>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .card {
-        border-radius: 0.5rem;
-    }
-
-    .card-header {
-        border-radius: 0.5rem 0.5rem 0 0;
-        font-weight: 600;
-    }
-
-    #plan {
-        border-color: #dee2e6;
-        padding: 0.75rem;
-    }
-
-        #plan:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-    .alert-info {
-        background-color: #f0f7ff;
-        border-color: #d1e7ff;
-    }
-</style>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.db.models import Sum, F
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,7 @@ from django.db.models import Sum
 
 from django.http import HttpRequest, HttpResponseForbidden, HttpResponse
 from main.decorators import role_required
-from datetime import timedelta
+from datetime import timedelta, datetime
 from rest_framework.views import APIView # type: ignore
 from rest_framework.response import Response # type: ignore
 from rest_framework import status, generics # type: ignore
@@ -201,6 +201,25 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
     
     student = request.user.student_profile
     
+    if request.GET.get('get_price') == '1':
+        date = request.GET.get('date_of_meal')
+        intake = request.GET.get('food_intake')
+        if date and intake:
+            menu = Menu.objects.filter(date=date, food_intake=intake).first()
+            if menu:
+                has_active_ticket = student.date and student.date >= datetime.strptime(date, '%Y-%m-%d').date()
+                print(has_active_ticket)
+                if has_active_ticket:
+                    price = Decimal(0)
+                else:
+                    price = menu.get_total_cost()
+
+                return JsonResponse({'price': float(price)})
+            else:
+                return JsonResponse({'price': None})
+            
+        return JsonResponse({'error': 'Missing parameters'}, status=400)
+
     if request.method == 'POST':
         form = StudentOrderForm(request.POST)
         if form.is_valid():
