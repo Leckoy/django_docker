@@ -1,0 +1,46 @@
+{% extends 'canadmin/main.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-3">Заказы</h3>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Ингредиент</th>
+                <th>Количество</th>
+                <th>Стоимость</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.ingredient }}</td>
+                <td>{{ order.amount }}</td>
+                <td>{{ order.cost }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    {% if order.status != 1 %}
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'change_order_status' order.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status">
+                            <button type="submit" class="btn btn-success btn-sm">Одобрить</button>
+                        </form>
+                        <form method="post" action="{% url 'change_order_status' order.id %}">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                    {% else %}
+                    Одобрено
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

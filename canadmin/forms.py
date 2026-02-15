@@ -1,7 +1,8 @@
 from django import forms
-from .models import User, Role
+from main.models import User, Role
 from django.contrib.auth import authenticate
 from student.models import Student
+
 
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -38,7 +39,7 @@ class UserRegistrationForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['role'].queryset = Role.objects.filter(title="Student")
+        # self.fields['role'].queryset = Role.objects.filter(title="Student")
         for field_name, field in self.fields.items():
             if isinstance(field.widget, (forms.Select, forms.SelectMultiple)):
                 field.widget.attrs['class'] = 'form-select'
@@ -46,30 +47,4 @@ class UserRegistrationForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-control'
 
             if field_name == 'password1':
-                field.widget.attrs['class'] += ' password-field'
-
-
-class LoginForm(forms.Form):
-    login = forms.CharField(label="Login", max_length=100)
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        login = cleaned_data.get("login")
-        password = cleaned_data.get("password")
-
-        if login and password:
-            user = authenticate(login=login, password=password)
-            if user is None:
-                raise forms.ValidationError("Invalid login or password")
-            cleaned_data["user"] = user
-        return cleaned_data
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-
-            if field_name == 'password':
                 field.widget.attrs['class'] += ' password-field'

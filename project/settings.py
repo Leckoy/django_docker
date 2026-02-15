@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'student',
     'rest_framework',
     'main',
+    'canadmin'
 ]
 
 MIDDLEWARE = [

@@ -25,6 +25,10 @@
                                 <a href="{% url 'main_page' %}" class="btn btn-primary btn-lg">
                                     Продолжить как ученик
                                 </a>
+                            {% elif user.role.title == "Admin" %}
+                                <a href="{% url 'admin_main_page' %}" class="btn btn-primary btn-lg">
+                                    Продолжить как администратор
+                                </a>
                             {% endif %}
                             
                             <!-- Выход -->
