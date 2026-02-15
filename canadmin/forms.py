@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate
 from student.models import Student
 from cook.models import Dish, Ingredient, Composition
 from django.forms import inlineformset_factory
+from django.forms import BaseInlineFormSet
+from django.core.exceptions import ValidationError
+
 
 
 
@@ -70,6 +73,20 @@ class IngredAddForm(forms.ModelForm):
         }
 
 class AddNewDishForm(forms.ModelForm):
+    DISH_TYPE_CHOICES = [
+        (1, 'soup(1)'),
+        (2, 'salad(2)'),
+        (3, 'main(3)'),
+        (4, 'dessert(4)'),
+        (5, 'drink(5)'),
+    ]
+
+    dish_type = forms.ChoiceField(
+        choices=DISH_TYPE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Dish Type'
+    )
+
     class Meta:
         model = Dish
         fields = ['title', 'weight', 'cost', 'dish_type', 'picture']
@@ -77,25 +94,36 @@ class AddNewDishForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dish name'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Weight in grams'}),
             'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Cost'}),
-            'dish_type': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dish type'}),
             'picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'title': 'Dish Name',
             'weight': 'Weight (g)',
             'cost': 'Cost',
-            'dish_type': 'Dish Type',
             'picture': 'Picture',
         }
+
+class CompositionInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        dish_weight = self.instance.weight
+        total_weight = 0
+
+        for form in self.forms:
+            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                ingr_weight = form.cleaned_data.get('weight', 0)
+                if ingr_weight > dish_weight:
+                    form.add_error('weight', f"Вес ингредиента ({ingr_weight} г) не может превышать вес блюда ({dish_weight} г).")
+                total_weight += ingr_weight
+
+        if total_weight > dish_weight:
+            raise ValidationError(f"Суммарный вес ингредиентов ({total_weight} г) превышает вес блюда ({dish_weight} г).")
 
 CompositionFormSet = inlineformset_factory(
     Dish,
     Composition,
     fields=['ingredient', 'weight'],
     extra=5,
-    can_delete=False,
-    widgets={
-        'ingredient': forms.Select(attrs={'class': 'form-control'}),
-        'weight': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Weight in grams'}),
-    }
+    formset=CompositionInlineFormSet
+
 )

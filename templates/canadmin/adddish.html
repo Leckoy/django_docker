@@ -1,26 +1,23 @@
 <h1>Add New Dish</h1>
-<form method="post" enctype="multipart/form-data">
+
+    <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {{ form.non_field_errors }}
     {{ form.as_p }}
 
-    <h3>Ingredients</h3>
+    <h3>Ингредиенты</h3>
     {{ formset.management_form }}
-    <table>
-        <thead>
-            <tr>
-                <th>Ingredient</th>
-                <th>Weight (g)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subform in formset %}
-            <tr>
-                <td>{{ subform.ingredient }}</td>
-                <td>{{ subform.weight }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% for subform in formset %}
+        {{ subform.non_field_errors }}
+        <div class="mb-3">
+            {{ subform.ingredient.errors }}
+            {{ subform.ingredient }}
+        </div>
+        <div class="mb-3">
+            {{ subform.weight.errors }}
+            {{ subform.weight }}
+        </div>
+    {% endfor %}
 
-    <button type="submit" class="btn btn-primary">Save Dish</button>
+    <button type="submit" class="btn btn-primary">Сохранить блюдо</button>
 </form>

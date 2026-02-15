@@ -27,8 +27,13 @@
         {% endblock %}
     </main>
     <footer>
+
         {% block footer %}{% endblock %}
+        
     </footer>
+    <div class="pt-5">
+{% block content %}
+{% endblock %}</div>
     {% block extra_js %}
     {% endblock %}
     <style>

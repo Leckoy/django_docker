@@ -80,7 +80,7 @@ def actions(request):
 
 
 def statistic(request):
-    
+    purchases = Purchases.objects.all()
     purchases = gets_dict(purchases)
     stat = {}
     for date, get in purchases.items():
