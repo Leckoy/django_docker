@@ -81,3 +81,26 @@ def statistic(request):
     context={"gets": gets_dict(purchases), "ords": paid_dict(purchases, ords)}
     # print(purchases.values("date"))
     return render(request, "canadmin/statistic.html", context)
+# def dishadd(request):
+#     if request.method == "POST":
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+
+#             # login(request, user)  # auto login after registration
+#             return redirect("admin_main_page")  # redirect to homepage
+#     else:
+#         form = UserRegistrationForm()
+#     return render(request, "canadmin/registration.html", {"form": form})
+def ingredadd(request):
+    if request.method == 'POST':
+        form = IngredAddForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('ingredient_list')
+    else:
+        form = IngredAddForm()
+    return render(request, 'canadmin/addingred.html', {'form': form})
+def ingredient_list(request):
+    ingredients = Ingredient.objects.all().order_by('title')
+    return render(request, 'canadmin/ingredient_list.html', {'ingredients': ingredients})

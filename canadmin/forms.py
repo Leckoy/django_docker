@@ -2,6 +2,7 @@ from django import forms
 from main.models import User, Role
 from django.contrib.auth import authenticate
 from student.models import Student
+from cook.models import Dish, Ingredient
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -48,3 +49,31 @@ class UserRegistrationForm(forms.ModelForm):
 
             if field_name == 'password1':
                 field.widget.attrs['class'] += ' password-field'
+# class AddNewDishForm(forms.ModelForm):
+#     title = forms.CharField(max_length=255)
+#     weight = forms.FloatField(label="Вес (г)")
+#     cost = forms.DecimalField(max_digits=10, decimal_places=2)
+#     dish_type = forms.CharField(max_length=50)
+#     picture = forms.ImageField()
+#     class Meta:
+#         model = Dish
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+class IngredAddForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ['title', 'amount', 'cost', 'picture']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter ingredient name'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Amount in grams'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Cost'}),
+            'picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'title': 'Ingredient Name',
+            'amount': 'Amount (g)',
+            'cost': 'Cost',
+            'picture': 'Picture',
+        }
+
