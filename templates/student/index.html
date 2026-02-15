@@ -40,16 +40,26 @@
       </div>
     </div>
   </div>
-<div class="col">
-    <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
-      <div class="card-body">
-        <h4 class="card-title"><i class="bi bi-bank me-1"></i>Пополнить счет</h4>
-        <p class="card-text">Здесь вы можете пополнить ваш счет</p>
-        <a href="{% url 'top_up' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
+  <div class="col">
+      <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-bank me-1"></i>Пополнить счет</h4>
+          <p class="card-text">Здесь вы можете пополнить ваш счет</p>
+          <a href="{% url 'top_up' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
+        </div>
+      </div>
+    </div>
+  <div class="col">
+      <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-clipboard-check me-1"></i></i>Отметиться</h4>
+          <p class="card-text">Здесь вы можете подтвердить получение заказа</p>
+          <a href="{% url 'student_orders_page' %}"><button class="btn btn-outline-color" type="submit">Перейти</button></a>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
 
 {% endblock %}
 

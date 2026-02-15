@@ -20,7 +20,7 @@ from rest_framework import status, generics
 from cook.models import Dish, Menu, Review, Stock, Ingredient, Composition
 from main.decorators import role_required
 from .models import Student, Purchases, Allergy
-from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm,BuyAbonimentForm
+from .forms import StudentOrderForm, AddAllergyForm, FeedBackForm,BuyAbonimentForm, TopUpForm
 from decimal import Decimal
 
 def dish_or_0(dish: Dish):
@@ -37,16 +37,6 @@ def index(request: HttpRequest) -> HttpResponse:
     context = {"title": "Главная страница"}
     return render(request, "student/index.html", context)
 
-def menu(request: HttpRequest) -> HttpResponse:
-    if not request.user.is_authenticated:
-        return redirect('login')
-    user_role_id = request.user.role.id if request.user.role else None
-
-    if user_role_id != 2: 
-        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
-    
-    context = {"dishes" : Dish.objects.all()}
-    return render(request, "student/menu.html", context)
 
 def allergy(request: HttpRequest) -> HttpResponse:
     if not request.user.is_authenticated:
@@ -129,7 +119,6 @@ def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
         })
 
 
-
 def top_up(request: HttpRequest) -> HttpResponse:
     if not request.user.is_authenticated:
         return redirect('login')
@@ -160,17 +149,6 @@ def top_up(request: HttpRequest) -> HttpResponse:
 
     return render(request, "student/top_up.html", {"form": form})
 
-
-def comment(request: HttpRequest, dish_id) -> HttpResponse:
-    if not request.user.is_authenticated:
-        return redirect('login')
-    user_role_id = request.user.role.id if request.user.role else None
-    if user_role_id != 2: 
-        return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
-
-    
-    dish = get_object_or_404(Dish, id=dish_id)
-    return render(request, "student/comment.html", {"dish": dish})
 
 
 def my_purchases_list(request):
@@ -248,6 +226,7 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
                 payment_type = "Абонемент"
             else:
                 price = menu_for_day.get_total_cost()
+                payment_type = "Разовая оплата"
 
             if not has_active_ticket and student.money < price:
                 messages.error(request, f"Недостаточно средств. Стоимость: {price} руб. Ваш баланс: {student.money} руб.")
@@ -311,11 +290,13 @@ def buy_season_ticket(request):
             elif plan == 270:
                 price = Decimal(150000)
                 days_to_add = int(270)
+
             money = student.money
+
             if money < price:
                 messages.error(request, f"Недостаточно средств. Стоимость тарифа: {price} руб.")
             else:
-                money -= price
+                student.money -= price
 
                 abdate= student.date
                 today = timezone.now().date()
@@ -458,37 +439,6 @@ def Menu_view(request):
         "allergies": allergies_ingredients,
     })
 
-# def FeedBack(request: HttpRequest,dish_id: int) -> HttpResponse:
-#     if not request.user.is_authenticated:
-#         return redirect('login')
-#     user_role_id = request.user.role.id if request.user.role else None
-#     if user_role_id != 2: 
-#         return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
-
-#     student = request.user.student_profile
-#     dish = get_object_or_404(Dish, id=dish_id)
-#     if request.method == 'POST':
-#         form = FeedBackForm(request.POST)
-#         if form.is_valid():
-#             new_komment = Review()
-
-#             mark = form.cleaned_data.get('mark')
-#             comment = form.cleaned_data.get('comment')
-#             new_komment.comment = comment
-#             new_komment.mark = mark
-#             new_komment.date = timezone.now()
-#             new_komment.dish = dish
-#             new_komment.student = student
-#             new_komment.save()
-#             return redirect('/student/menu/') 
-#         else:
-#             messages.error(request, "Ошибка: проверьте данные формы.")
-#     else:
-#         form = FeedBackForm()
-#     return render(request, 'student/comment.html', {
-#             'form': form,
-#             'dish': dish
-#         })
 
 
 
