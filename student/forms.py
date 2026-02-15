@@ -117,7 +117,7 @@ class TopUpForm(forms.Form):
     summa = forms.DecimalField(
         label="Сумма пополнения",
         min_value=Decimal('0.01'),
-        max_value=Decimal('100000'),
+        max_value=Decimal('1000000'),
         decimal_places=2,
         widget=forms.NumberInput(
             attrs={
@@ -130,7 +130,7 @@ class TopUpForm(forms.Form):
             'min_value': 'Сумма должна быть больше 0',
             'required': 'Введите сумму пополнения',
             'invalid': 'Введите корректную сумму',
-            'max_value': 'Сумма должна быть меньше 100000'
+            'max_value': 'Сумма должна быть меньше 1000000'
         }
     )
 
