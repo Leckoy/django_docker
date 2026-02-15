@@ -32,6 +32,7 @@ def change_order_status(request, order_id):
         order.status = 1
         order.save()
     return redirect('admin_view_orders')
+
 # @login_required('Admin')
 def registration(request):
     try:
@@ -49,6 +50,8 @@ def registration(request):
     else:
         form = UserRegistrationForm()
     return render(request, "canadmin/registration.html", {"form": form})
+
+
 def actions(request):
     # Attributes attendance, date, date_of_meal, deposited_money, food_intake, id, menu, menu_id, student, student_id, type_of_purchase
     start_date = request.GET.get("start")
@@ -74,8 +77,13 @@ def actions(request):
         "end_date": end_date,
     }
     return render(request, 'canadmin/actions.html', context)
+
+
 def statistic(request):
     purchases = Purchases.objects.all()
-    context={"gets": gets_dict(purchases)}
-    # print(purchases.values("date"))
-    return render(request, "canadmin/statistic.html", context)
+    purchases = gets_dict(purchases)
+    stat = {}
+    for date, get in purchases.items():
+        stat[date] = get
+
+    return render(request, "canadmin/statistic.html", {"statistic": stat})

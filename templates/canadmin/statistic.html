@@ -1,11 +1,80 @@
-{% extends "base/base_cook.html" %}
-{% block content %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
-<div class="container mt-5"></div>
-<ul>
-  {% for date, get in gets.items %}
-    <li>from {{date}} get {{ get }}</li>
-  {% endfor %}
-</ul>
+{% extends "base/base_admin.html" %}
+
+{% block main %}
+<div class="container-fluid" style="margin-top: 90px;">
+    <div class="mx-5">
+        <h1 class="mb-4">Статистика закупок</h1>
+
+        <!-- Карточка с диаграммой -->
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+            <div class="card-body p-4">
+                <h4 class="card-title fw-semibold d-flex align-items-center mb-3">
+                    <i class="bi bi-bar-chart-line me-2"></i>Диаграмма количества закупок по датам
+                </h4>
+                <p class="card-text text-muted lh-base mb-4">
+                    На графике отображено количество оформленных заказов (закупок) за последние дни.
+                </p>
+
+                <!-- Контейнер для canvas с ограничением ширины (по желанию) -->
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <canvas id="OrdersChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительная информация или подсказка (опционально) -->
+        <div class="mt-4 p-3 border-2 border-color border-opacity-25 rounded-3 bg-light bg-opacity-10 text-center">
+            <i class="bi bi-info-circle me-2 text-primary"></i>
+            <span class="small">Для просмотра деталей наведите курсор на столбец.</span>
+        </div>
+
+        <div class="mt-3 ms-3" style="padding-bottom: 20px;">
+            <a href="{% url 'main_page' %}" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
+        </div>
+    </div>
+    </div>
 </div>
+
+<!-- Данные статистики передаются в скрытом JSON-элементе -->
+{{ statistic|json_script:"statistic-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    (function() {
+        const statistic = JSON.parse(document.getElementById('statistic-data').textContent);
+        const labels = Object.keys(statistic);
+        const values = Object.values(statistic);
+
+        const ctx = document.getElementById('OrdersChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Продажи (количество заказов)',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    hoverBackgroundColor: 'rgba(54, 163, 235, 0.84)',
+                    borderColor: '#2652ca',        // используем ваш фирменный синий
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#b5c6f5' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    })();
+</script>
 {% endblock %}

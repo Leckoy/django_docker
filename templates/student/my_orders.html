@@ -47,7 +47,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="purchase_id" value="{{ order.id }}">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-circle me-1"></i>Я получил заказ
+                            <i class="bi bi-check-circle me-1"></i>Я получил(-а) заказ
                         </button>
                     </form>
                     {% elif order.attendance %}
@@ -79,7 +79,7 @@
 
 {% block extra_css %}
     <style>
-    .orders-table {
+        .orders-table {
             width: 100%;
             border-collapse: collapse;
             border: 2px solid #b5c6f5;

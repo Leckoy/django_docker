@@ -15,5 +15,7 @@ def gets_dict(purch):
         plot[str(day_date)] = int(total_bud)
     print(plot)
     return plot
+
+
 def paid_dict():
     pass
