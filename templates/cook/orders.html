@@ -1,0 +1,40 @@
+<h2 class="mb-4">Заказы на сегодня</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ученик</th>
+            <th>Приём пищи</th>
+            <th>Меню</th>
+            <th>Готово?</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.student }}</td>
+            <td>{{ order.food_intake }}</td>
+            <td>{{ order.menu }}</td>
+
+            <td>
+                {% if order.is_ready %}
+                    <span class="badge bg-success">Готово</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Не готово</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if not order.is_ready %}
+                <form action="{% url 'mark_ready' order.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-sm">Приготовлено</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

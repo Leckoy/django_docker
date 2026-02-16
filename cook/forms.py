@@ -101,13 +101,13 @@ class DishAddForm(forms.ModelForm):
         })
     )
 
-    weigh = forms.FloatField(
-        label="Количество блюд для добавления",
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control', 
-            'step': '0.01'
-        })
-    )
+    weigh = forms.IntegerField(
+    label="Количество блюд для добавления",
+    widget=forms.NumberInput(attrs={
+        'class': 'form-control',
+        'step': '1'
+    })
+)
     class Meta:
         model = Dish
         fields = ['title', 'weigh']

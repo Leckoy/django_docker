@@ -282,7 +282,7 @@ def pay_onetime(request: HttpRequest) -> HttpResponse:
                     order.deposited_money = price
                     order.type_of_purchase = payment_type
                     order.save()
-
+                    
                     messages.success(request, f"Заказ успешно оформлен через {payment_type}.")
                     return redirect('main_page')
             except Exception as e:
