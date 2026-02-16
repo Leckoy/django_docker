@@ -171,116 +171,41 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
             'all_ingredients': all_ingredients
         })
 
+
 def Menu_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
+
     user_role_id = request.user.role.id if request.user.role else None
     if user_role_id != 3: 
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
-    
+
     now = timezone.now().date()
 
-    m1_breakfast = Menu.objects.filter(date=now - timedelta(days=1), food_intake="Завтрак").first()
-    m1_lunch = Menu.objects.filter(date=now - timedelta(days=1),food_intake="Обед").first()
-
-    m2_breakfast = Menu.objects.filter(date=now, food_intake="Завтрак").first()
-    m2_lunch = Menu.objects.filter(date=now,food_intake="Обед").first()
-
-    m3_breakfast = Menu.objects.filter(date=now + timedelta(days=1), food_intake="Завтрак").first()
-    m3_lunch = Menu.objects.filter(date=now + timedelta(days=1),food_intake="Обед").first()
-
-    m4_breakfast = Menu.objects.filter(date=now + timedelta(days=2), food_intake="Завтрак").first()
-    m4_lunch = Menu.objects.filter(date=now + timedelta(days=2),food_intake="Обед").first()
-    
-    m5_breakfast = Menu.objects.filter(date=now + timedelta(days=3), food_intake="Завтрак").first()
-    m5_lunch = Menu.objects.filter(date=now + timedelta(days=3),food_intake="Обед").first()
-
-    m6_breakfast = Menu.objects.filter(date=now + timedelta(days=4), food_intake="Завтрак").first()
-    m6_lunch = Menu.objects.filter(date=now + timedelta(days=4),food_intake="Обед").first()
-
-    m7_breakfast = Menu.objects.filter(date=now + timedelta(days=5), food_intake="Завтрак").first()
-    m7_lunch = Menu.objects.filter(date=now + timedelta(days=5),food_intake="Обед").first()
-
-    price1_breakfast = m1_breakfast.get_total_cost() if m1_breakfast else 0
-    price1_lunch = m1_lunch.get_total_cost() if m1_lunch else 0
-
-    price2_breakfast = m2_breakfast.get_total_cost() if m2_breakfast else 0
-    price2_lunch = m2_lunch.get_total_cost() if m2_lunch else 0
-
-    price3_breakfast = m3_breakfast.get_total_cost() if m3_breakfast else 0
-    price3_lunch = m3_lunch.get_total_cost() if m3_lunch else 0
-
-    price4_breakfast = m4_breakfast.get_total_cost() if m4_breakfast else 0
-    price4_lunch = m4_lunch.get_total_cost() if m4_lunch else 0
-
-    price5_breakfast = m5_breakfast.get_total_cost() if m5_breakfast else 0
-    price5_lunch = m5_lunch.get_total_cost() if m5_lunch else 0
-
-    price6_breakfast = m6_breakfast.get_total_cost() if m6_breakfast else 0
-    price6_lunch = m6_lunch.get_total_cost() if m6_lunch else 0
-
-    price7_breakfast = m7_breakfast.get_total_cost() if m7_breakfast else 0
-    price7_lunch = m7_lunch.get_total_cost() if m7_lunch else 0
-
-    days_data = [
-        {
-            'title': 'Вчера',
-            'meals': [
-                    {'name': 'Завтрак', 'menu':m1_breakfast, 'price': price1_breakfast},
-                    {'name': 'Обед', 'menu': m1_lunch, 'price': price1_lunch},
-                ],
-        },
-
-        {
-            'title': 'Сегодня',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m2_breakfast, 'price': price2_breakfast},
-                {'name': 'Обед', 'menu': m2_lunch, 'price': price2_lunch},
-            ],
-        },
-
-        {
-            'title': 'Завтра',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m3_breakfast, 'price': price3_breakfast},
-                {'name': 'Обед', 'menu': m3_lunch, 'price': price3_lunch},
-            ],
-        },
-
-        {
-            'title': 'Послезавтра',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m4_breakfast, 'price': price4_breakfast},
-                {'name': 'Обед', 'menu': m4_lunch, 'price': price4_lunch},
-            ],
-        },
-
-        {
-            'title': 'Через 3 дня',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m5_breakfast, 'price': price5_breakfast},
-                {'name': 'Обед', 'menu': m5_lunch, 'price': price5_lunch},
-            ],
-        },
-
-        {
-            'title': 'Через 4 дня',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m6_breakfast, 'price': price6_breakfast},
-                {'name': 'Обед', 'menu': m6_lunch, 'price': price6_lunch},
-            ],
-        },
-
-        {
-            'title': 'Через 5 дней',
-            'meals': [
-                {'name': 'Завтрак', 'menu':m7_breakfast, 'price': price7_breakfast},
-                {'name': 'Обед', 'menu': m7_lunch, 'price': price7_lunch},
-            ],
-        }
+    titles = [
+        "Вчера",
+        "Сегодня",
+        "Завтра",
+        "Послезавтра",
+        "Через 3 дня",
+        "Через 4 дня",
+        "Через 5 дней",
     ]
-                
 
-    return render(request, 'cook/menu.html', {
-        'days': days_data,
-    })
+    days_data = []
+    for i, title in enumerate(titles, start=-1):
+        date = now + timedelta(days=i)
+        breakfast = Menu.objects.filter(date=date, food_intake="Завтрак").first()
+        lunch = Menu.objects.filter(date=date, food_intake="Обед").first()
+
+        day_info = {
+            "title": title,
+            "meals": [
+                {"name": "Завтрак", "menu": breakfast, "price": breakfast.get_total_cost() if breakfast else 0},
+                {"name": "Обед", "menu": lunch, "price": lunch.get_total_cost() if lunch else 0},
+            ],
+
+        }
+        days_data.append(day_info)
+
+    return render(request, "cook/menu.html", {"days": days_data})

@@ -34,6 +34,17 @@
                                     {% for dish in meal.menu.get_dishes %}
                                         <li class="mb-2 d-flex flex-wrap align-items-center">
                                             <span class="me-2">{{ dish.title }} ({{ dish.cost }} руб.)</span>
+                                            {% if dish.reviews.all %}
+                                            <ul class="mt-2">
+                                                {% for review in dish.reviews.all %}
+                                                    <li>
+                                                        <strong>{{ review.student }}</strong>: {{ review.comment }}
+                                                        <small>(Оценка: {{ review.mark }})</small>
+                                                        </li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endif %}
+
                                         </li>
                                     {% endfor %}
                                 </ul>
