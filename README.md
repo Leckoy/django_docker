@@ -72,6 +72,15 @@
     ```
     docker-compose up
     ```
+11. **админ**
+    login:
+    ```
+     admin
+    ```
+    password:
+    ```
+     admin
+    ```
 
 ### Видеоролик
 

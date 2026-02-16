@@ -242,6 +242,7 @@ def Menu_view(request):
 
     return render(request, "cook/menu.html", {"days": days_data})
 
+
 def mark_ready(request, order_id):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -250,19 +251,26 @@ def mark_ready(request, order_id):
         return HttpResponseForbidden("Доступ запрещён")
 
     order = get_object_or_404(Purchases, id=order_id)
+
+    # Проверяем, хватает ли блюд
     for dish in order.menu.get_dishes():
         if dish:
-            if Dish.objects.filter(id=dish.id).weight <= 0:
+            if dish.weight <= 0:
                 messages.error(request, f"Недостаточно блюда {dish.title} для выполнения заказа!")
                 return redirect('cook_orders')
+
+    # Отмечаем заказ как готовый
     order.is_ready = True
     order.save()
-    # delete from cook_dish where id = order.menu.dish1.id
+
+    # Уменьшаем количество приготовленных блюд
     for dish in order.menu.get_dishes():
         if dish:
             Dish.objects.filter(id=dish.id).update(weight=F('weight') - 1)
-    
+
+    messages.success(request, "Заказ отмечен как готовый")
     return redirect('cook_orders')
+
 
 def cook_orders(request):
     if not request.user.is_authenticated:
