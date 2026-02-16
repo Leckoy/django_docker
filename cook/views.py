@@ -6,12 +6,15 @@ from .serializers import IngredientSerializer, DishSerializer
 from decimal import Decimal
 from django.db import transaction
 from .models import *
+from student.models import *
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import CreateMenuForm, IngredientOrdeForm, IngredientUseForm, DishAddForm
 from datetime import timedelta
 from django.utils import timezone
+from datetime import date
+from django.db.models import F
 
 
 
@@ -215,3 +218,33 @@ def Menu_view(request):
         days_data.append(day_info)
 
     return render(request, "cook/menu.html", {"days": days_data})
+def mark_ready(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if not request.user.role or request.user.role.id != 3:
+        return HttpResponseForbidden("Доступ запрещён")
+
+    order = get_object_or_404(Purchases, id=order_id)
+    order.is_ready = True
+    order.save()
+    # delete from cook_dish where id = order.menu.dish1.id
+    for dish in order.menu.get_dishes():
+        if dish:
+            Dish.objects.filter(id=dish.id).update(weight=F('weight') - 1)
+    
+    return redirect('cook_orders')
+def cook_orders(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # проверка роли повара (например, role.id == 3)
+    if not request.user.role or request.user.role.id != 3:
+        return HttpResponseForbidden("Доступ запрещён")
+
+    today = date.today()
+    orders = Purchases.objects.filter(date_of_meal=today).order_by('food_intake')
+
+    return render(request, 'cook/orders.html', {
+        'orders': orders
+    })

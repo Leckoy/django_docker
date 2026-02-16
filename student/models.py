@@ -18,6 +18,7 @@ class Purchases(models.Model):
     attendance = models.BooleanField(default=False)
     food_intake = models.CharField(max_length=50)
     type_of_purchase = models.CharField(max_length=50)
+    is_ready = models.BooleanField(default=False)
     
     def __str__(self):
         return f"Чек №{self.id} — {self.student.user.name}"

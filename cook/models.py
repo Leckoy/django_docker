@@ -47,7 +47,7 @@ class Menu(models.Model):
 
     def __str__(self):
         return f"Меню на {self.date} ({self.food_intake})"
-        return self.name
+
     
     def get_total_cost(self):
         dishes = [self.dish1, self.dish2, self.dish3, self.dish4, self.dish5]

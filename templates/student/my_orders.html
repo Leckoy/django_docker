@@ -35,13 +35,27 @@
                     {% endif %}
                 </td>
                 <td class="text-center border-bottom-color">
-                    {% if order.attendance %}
-                    <span class="status-badge status-received" style="font-size: 1rem;"><i class="bi bi-check2-square me-1"></i>Получено </span>
-                    {% else %}
-                    <span class="status-badge status-pending" style="font-size: 1rem;"><i class="bi bi-hourglass-split me-1"></i> Ожидает</span>
-                    {% endif %}
-                </td>
+
+    {% if not order.is_ready %}
+        <span class="status-badge status-pending" style="font-size: 1rem;">
+            <i class="bi bi-x-circle me-1"></i> Не готово
+        </span>
+
+    {% else %}
+        {% if order.attendance %}
+            <span class="status-badge status-received" style="font-size: 1rem;">
+                <i class="bi bi-check2-square me-1"></i> Получено
+            </span>
+        {% else %}
+            <span class="status-badge status-pending" style="font-size: 1rem;">
+                <i class="bi bi-hourglass-split me-1"></i> Ожидает выдачи
+            </span>
+        {% endif %}
+    {% endif %}
+
+</td>
                 <td class="text-center border-bottom-color">
+                    {% if order.is_ready %}
                     {% if order.date_of_meal == today and not order.attendance %}
                     <form method="post" class="d-inline">
                         {% csrf_token %}
@@ -54,6 +68,9 @@
                     <small class="text-secondary">Заказ выдан</small>
                     {% else %}
                     <small class="text-secondary">Кнопка появится в день заказа</small>
+                    {% endif %}
+                    {% else %}
+                    <small class="text-secondary">Заказ еще не готов</small>
                     {% endif %}
                 </td>
             </tr>
