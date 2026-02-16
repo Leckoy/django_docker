@@ -15,6 +15,8 @@ from datetime import timedelta
 from django.utils import timezone
 from datetime import date
 from django.db.models import F
+from django.test import Client
+
 
 def fproducts(request):
 	products = Ingredient.objects.all()
@@ -143,14 +145,13 @@ def IngredientOrder(request: HttpRequest) -> HttpResponse:
 
 
 
-
 def DishAdd(request: HttpRequest) -> HttpResponse:
     if not request.user.is_authenticated:
         return redirect('login')
-    user_role_id = request.user.role.id if request.user.role else None
-    if user_role_id != 3: 
-        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
 
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 3:
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь поваром.")
 
     if request.method == 'POST':
         form = DishAddForm(request.POST)
@@ -158,22 +159,49 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
             weigh = form.cleaned_data.get('weigh')
             dishh = form.cleaned_data.get('title')
 
-            if 0 > weigh:
+            if weigh < 0:
                 messages.error(request, "Введите корректное число")
-            else:
-                dishh.weight += weigh
-                dishh.save()
-                messages.success(request, "Блюдо успешно добавлено")
-                return redirect('dish') 
+                return redirect('dish')
+
+            compositions = Composition.objects.filter(dish=dishh)
+
+            insufficient = []
+            for comp in compositions:
+                required = comp.weight * weigh
+                if comp.ingredient.amount < required:
+                    insufficient.append(
+                        f"{comp.ingredient.title} (нужно {required} г, есть {comp.ingredient.amount} г)"
+                    )
+
+            if insufficient:
+                messages.error(
+                    request,
+                    "Недостаточно ингредиентов:\n" + "\n".join(insufficient)
+                )
+                return redirect('dish')
+            dishh.weight += weigh
+            dishh.save()
+
+            for comp in compositions:
+                total_used = comp.weight * weigh
+                ingr = comp.ingredient
+                ingr.amount -= total_used
+                ingr.save()
+
+            messages.success(request, "Блюдо приготовлено и ингредиенты списаны.")
+            return redirect('dish')
         else:
             messages.error(request, "Ошибка: выберите блюдо из списка.")
     else:
         form = DishAddForm()
+
     all_ingredients = Dish.objects.all()
     return render(request, 'cook/dish.html', {
-            'form': form,
-            'all_ingredients': all_ingredients
-        })
+        'form': form,
+        'all_ingredients': all_ingredients
+    })
+
+
 
 
 def Menu_view(request):
