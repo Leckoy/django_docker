@@ -30,7 +30,7 @@
             {% if messages %}
             <div class="position-fixed top-2 end-0 p-3" style="z-index: 1100;">
                 {% for message in messages %}
-                <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000" >
+                <div class="toast align-items-center text-white bg-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}  border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000" >
                     <div class="d-flex">
                         <div class="toast-body">
                             {{ message }}
