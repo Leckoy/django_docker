@@ -16,34 +16,35 @@
     </header>
     <main>
             <nav class="navbar bg-top bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
+                    <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
+                        {{ user.name }}
+                    </p>
+                    <a href="{% url 'logout' %}" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Выйти из аккаунта</a>
+                </div>
+            </nav>
 
-        <!-- Левая часть: кнопки выхода -->
-        <div class="d-flex">
-            <a href="{% url 'logout' %}" class="btn btn-danger me-2">
-                <i class="bi bi-box-arrow-right"></i> Выйти из аккаунта
-            </a>
-        </div>
+            {% if messages %}
+            <div class="position-fixed top-2 end-0 p-3" style="z-index: 1100;">
+                {% for message in messages %}
+                <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000" >
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-        <p class="fs-3 text-center mb-0">{{ user.name }}</p>
-
-        <!-- Правая часть: кнопка возврата -->
-        <a href="{% url 'admin_main_page' %}" class="btn btn-outline-color btn-lg py-2 fw-bold ms-auto">
-            <i class="bi bi-arrow-left me-2"></i> Вернуться на главную
-        </a>
-    </div>
-</nav>
         {% block main %}
         {% endblock %}
     </main>
     <footer>
-
         {% block footer %}{% endblock %}
-        
     </footer>
-    <div class="pt-5">
-{% block content %}
-{% endblock %}</div>
     {% block extra_js %}
     {% endblock %}
     <style>
@@ -61,6 +62,12 @@
 	.bg-top{
 		background-color: #4252e6;
 	}
+    .bg-inf{
+        background-color: #e2f2fc;
+    }
+    .bg-today{
+        background-color: #f4f5ffed;
+    }
 </style>
     {% block extra_css %}
     {% endblock %}

@@ -60,16 +60,16 @@ class IngredAddForm(forms.ModelForm):
         model = Ingredient
         fields = ['title', 'amount', 'cost', 'picture']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter ingredient name'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Amount in grams'}),
-            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Cost'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название ингредиента'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Сумма в граммах'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Цена'}),
             'picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
         labels = {
-            'title': 'Ingredient Name',
-            'amount': 'Amount (g)',
-            'cost': 'Cost',
-            'picture': 'Picture',
+            'title': 'Название ингредиента',
+            'amount': 'Сумма (г)',
+            'cost': 'Цена',
+            'picture': 'Изображение',
         }
     def clean_title(self):
         title = self.cleaned_data['title']
@@ -80,33 +80,53 @@ class IngredAddForm(forms.ModelForm):
 
 class AddNewDishForm(forms.ModelForm):
     DISH_TYPE_CHOICES = [
-        (1, 'soup(1)'),
-        (2, 'salad(2)'),
-        (3, 'main(3)'),
-        (4, 'dessert(4)'),
-        (5, 'drink(5)'),
+        (1, 'суп(1)'),
+        (2, 'салат(2)'),
+        (3, 'главное блюдо(3)'),
+        (4, 'десерт(4)'),
+        (5, 'напиток(5)'),
     ]
 
     dish_type = forms.ChoiceField(
         choices=DISH_TYPE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Dish Type'
+        label='Тип блюда'
     )
 
     class Meta:
         model = Dish
         fields = ['title', 'weight', 'cost', 'dish_type', 'picture']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dish name'}),
-            'weight': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Weight in grams'}),
-            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Cost'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название блюда'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Вес в граммах'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Цена'}),
             'picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
         labels = {
-            'title': 'Dish Name',
-            'weight': 'Weight (g)',
-            'cost': 'Cost',
-            'picture': 'Picture',
+            'title': 'Название блюда',
+            'weight': 'Вес (г)',
+            'cost': 'Цена',
+            'picture': 'Изображение',
+        }
+
+        error_messages = {
+            'title': {
+                'required': 'Введите название блюда.',
+            },
+            'weight': {
+                'required': 'Укажите вес блюда',
+                'invalid': 'Введите корректное число',
+                'min_value': 'Вес должен быть больше 0',
+            },
+            'cost': {
+                'required': 'Укажите стоимость блюда',
+                'invalid': 'Введите корректную цену',
+                'min_value': 'Цена должна быть больше 0',
+            },
+            'picture': {
+                'required': 'Загрузите изображение блюда',
+                'invalid': 'Загрузите корректный файл изображения',
+            },
         }
 
 class CompositionInlineFormSet(BaseInlineFormSet):

@@ -38,7 +38,7 @@
                                             <ul class="mt-2">
                                                 {% for review in dish.reviews.all %}
                                                     <li>
-                                                        <strong>{{ review.student }}</strong>: {{ review.comment }}
+                                                        <strong>{{ review.student.user.name }}</strong>: {{ review.comment }}
                                                         <small>(Оценка: {{ review.mark }})</small>
                                                         </li>
                                                 {% endfor %}

@@ -1,6 +1,6 @@
-{% extends 'base/base_cook.html' %}
+{% extends 'base/base_admin.html' %}
 
-{% block content %}
+{% block main %}
 <nav class="navbar bg-top text-white fixed-top border-bottom py-2" style="min-height: 60px;">
     <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
         <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
@@ -14,7 +14,7 @@
 	<div class="col " style="width: 2000px;">
 		<div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
 		<div class="card-body p-4">
-			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-menu-button-wide me-1"></i>Запросы на продукты</h4>
+			<h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-journal-bookmark me-1"></i>Запросы на продукты</h4>
 			<p class="card-text text-muted lh-base mb-4">Здесь вы можете подтвердить заказы поваров на ингридиенты</p>
 			<a href="{% url 'admin_view_orders' %}"><button class="btn btn-outline-color  w-100" type="submit">Перейти</button></a>
 		</div>
@@ -23,7 +23,7 @@
 	<div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i>Статистика</h4>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-bar-chart-line me-1"></i>Статистика</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться со статистикой столовой</p>
             <a href="{% url 'statistic' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
@@ -32,25 +32,25 @@
 	<div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i color='red'>Отчёты</h4>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-justify-left me-1"></i>Отчёты</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы можете ознакомиться с отчётами о действии пользователей</p>
             <a href="{% url 'actions' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
     </div>
 	</div>
-    	<div class="col">
+    <div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-basket text-indigo me-2"></i>Регистрация пользователей</h4>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-person-plus me-1"></i>Регистрация пользователей</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы можете зарегистрировать новых работников/студентов</p>
             <a href="{% url 'admin_registration_page' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
     </div>
 	</div>
-    	<div class="col">
+    <div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i>Добавление новых ингредиентов</h4>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-clipboard-plus me-1"></i>Добавление новых ингредиентов</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы добавить новые ингредиенты</p>
             <a href="{% url 'ingredient_list' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>
@@ -59,7 +59,7 @@
     <div class="col">
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
         <div class="card-body p-4">
-            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"  style='color: red'><i class="bi bi-basket text-indigo me-2"></i>Добавление новых блюд</h4>
+            <h4 class="card-title fw-semibold d-flex align-items-center mb-3"><i class="bi bi-clipboard-plus me-1"></i>Добавление новых блюд</h4>
             <p class="card-text text-muted lh-base mb-4">Здесь вы добавить новые блюда</p>
             <a href="{% url 'dishes_list' %}" class="btn btn-outline-color  w-100">Перейти</a>
         </div>

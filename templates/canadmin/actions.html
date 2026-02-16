@@ -1,26 +1,59 @@
-{% extends "base/base_cook.html" %}
+{% extends 'base/base_admin.html' %}
 
-{% block content %}
-<div class="container mt-5">
-    <h2>Статистика заказов</h2>
-    {% if start_date and end_date %}
-        <p>Период: {{ start_date }} — {{ end_date }}</p>
-    {% else %}
-        <p>Период не выбран (показаны все данные)</p>
-    {% endif %}
+{% block main %}
+<div class="container-fluid" style="margin-top: 90px;">
+    <div class="mx-5">
+        <!-- Отдельная карточка для заголовка (как в шаблоне повара) -->
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
+            <div class="card-header bg-top text-white py-3">
+                <h3 class="mb-0"><i class="bi bi-card-list me-1"></i>Статистика заказов</h3>
+            </div>
+        </div>
 
-    <ul class="list-group mt-3">
-        <li class="list-group-item">Количество покупателей: {{ total_buyers }}</li>
-        <li class="list-group-item">Количество посещений (съели): {{ total_attendance }}</li>
-        <li class="list-group-item">Общая сумма оплат: {{ total_money }} руб.</li>
-    </ul>
+        <!-- Блок с периодом (оставлен как есть, но с отступом) -->
+        {% if start_date and end_date %}
+            <p class="mb-4">Период: {{ start_date }} — {{ end_date }}</p>
+        {% else %}
+            <p class="mb-4">Период не выбран (показаны все данные)</p>
+        {% endif %}
 
-    <form method="get" class="mt-4">
-        <label for="start">Начало периода:</label>
-        <input type="date" id="start" name="start" class="form-control" required>
-        <label for="end" class="mt-2">Конец периода:</label>
-        <input type="date" id="end" name="end" class="form-control" required>
-        <button type="submit" class="btn btn-primary mt-3">Показать статистику</button>
-    </form>
+        <!-- Карточка со статистикой -->
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Количество покупателей: <strong class="text-primary">{{ total_buyers }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Количество посещений (съели): <strong class="text-primary">{{ total_attendance }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Общая сумма оплат: <strong class="text-primary">{{ total_money }} руб.</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+            <div class="card-body p-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="start" class="form-label fw-bold">Начало периода:</label>
+                        <input type="date" id="start" name="start" class="form-control border-2 border-color" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="end" class="form-label fw-bold">Конец периода:</label>
+                        <input type="date" id="end" name="end" class="form-control border-2 border-color" required>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-color w-100 fw-bold py-2">Показать статистику</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="padding-left: 60px;">
+    <a href="{% url 'admin_main_page' %}" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
 </div>
 {% endblock %}

@@ -8,6 +8,7 @@ class Student(models.Model):
     def __str__(self):
         status = f"Абонемент до {self.date}" if self.date else "Нет абонемента"
         return f"{self.user.name} — {self.money} руб. ({status})"
+    
 class Purchases(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     menu = models.ForeignKey('cook.Menu', on_delete=models.CASCADE)

@@ -5,7 +5,7 @@
     <div class="mx-5">
         <h1 class="mb-4">Статистика закупок</h1>
 
-        <!-- Карточка с диаграммой -->
+        
         <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
             <div class="card-body p-4">
                 <h4 class="card-title fw-semibold d-flex align-items-center mb-3">
@@ -15,14 +15,14 @@
                     На графике отображен заработок от покупок студентами
                 </p>
 
-                <!-- Контейнер для canvas с ограничением ширины (по желанию) -->
+                
                 <div style="max-width: 800px; margin: 0 auto;">
                     <canvas id="OrdersChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Дополнительная информация или подсказка (опционально) -->
+        
         <div class="mt-4 p-3 border-2 border-color border-opacity-25 rounded-3 bg-light bg-opacity-10 text-center">
             <i class="bi bi-info-circle me-2 text-primary"></i>
             <span class="small">Для просмотра деталей наведите курсор на столбец.</span>
@@ -35,7 +35,7 @@
     </div>
 </div>
 
-<!-- Данные статистики передаются в скрытом JSON-элементе -->
+
 {{ statistic|json_script:"statistic-data" }}
 
 {% endblock %}
@@ -58,7 +58,7 @@
                     data: values,
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     hoverBackgroundColor: 'rgba(54, 163, 235, 0.84)',
-                    borderColor: '#2652ca',        // используем ваш фирменный синий
+                    borderColor: '#2652ca',  
                     borderWidth: 1
                 }]
             },
