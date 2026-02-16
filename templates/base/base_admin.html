@@ -16,13 +16,23 @@
     </header>
     <main>
             <nav class="navbar bg-top bg-gradient text-white fixed-top border-bottom py-2" style="min-height: 60px;">
-                <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
-                    <p class="fs-3 text-center position-absolute top-50 start-50 translate-middle mb-0">
-                        {{ user.name }}
-                    </p>
-                    <a href="{% url 'logout' %}" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Выйти из аккаунта</a>
-                </div>
-            </nav>
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <!-- Левая часть: кнопки выхода -->
+        <div class="d-flex">
+            <a href="{% url 'logout' %}" class="btn btn-danger me-2">
+                <i class="bi bi-box-arrow-right"></i> Выйти из аккаунта
+            </a>
+        </div>
+
+        <p class="fs-3 text-center mb-0">{{ user.name }}</p>
+
+        <!-- Правая часть: кнопка возврата -->
+        <a href="{% url 'admin_main_page' %}" class="btn btn-outline-color btn-lg py-2 fw-bold ms-auto">
+            <i class="bi bi-arrow-left me-2"></i> Вернуться на главную
+        </a>
+    </div>
+</nav>
         {% block main %}
         {% endblock %}
     </main>

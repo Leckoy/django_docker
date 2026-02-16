@@ -1,4 +1,4 @@
-{% extends "base/base_student.html" %}
+{% extends "base/base_admin.html" %}
 {% load static %}
 
 {% block main %}
@@ -59,10 +59,6 @@
         {% endfor %}
     </div>
 
-    <div class="mt-4 mx-5 pb-4">
-        <a href="{% url 'main_cook_page' %}" class="btn btn-outline-color btn-lg py-2 fw-bold ">
-            <i class="bi bi-arrow-left me-2"></i>Вернуться на главную
-        </a>
-    </div>
+
 </div>
 {% endblock %}

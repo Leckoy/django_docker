@@ -71,6 +71,12 @@ class IngredAddForm(forms.ModelForm):
             'cost': 'Cost',
             'picture': 'Picture',
         }
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if Ingredient.objects.filter(title__iexact=title).exists():
+            raise forms.ValidationError("Ингредиент с таким названием уже существует.")
+        return title
+
 
 class AddNewDishForm(forms.ModelForm):
     DISH_TYPE_CHOICES = [
