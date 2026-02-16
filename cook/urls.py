@@ -17,6 +17,4 @@ path('menu/', Menu_view, name="menu"),
 path('cook/orders/', views.cook_orders, name='cook_orders'),
 path('cook/orders/<int:order_id>/ready/', views.mark_ready, name='mark_ready'),
 
-
-
 ]
