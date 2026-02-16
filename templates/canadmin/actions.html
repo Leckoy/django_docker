@@ -3,21 +3,18 @@
 {% block main %}
 <div class="container-fluid" style="margin-top: 90px;">
     <div class="mx-5">
-        <!-- Отдельная карточка для заголовка (как в шаблоне повара) -->
         <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
             <div class="card-header bg-top text-white py-3">
                 <h3 class="mb-0"><i class="bi bi-card-list me-1"></i>Статистика заказов</h3>
             </div>
         </div>
 
-        <!-- Блок с периодом (оставлен как есть, но с отступом) -->
         {% if start_date and end_date %}
             <p class="mb-4">Период: {{ start_date }} — {{ end_date }}</p>
         {% else %}
             <p class="mb-4">Период не выбран (показаны все данные)</p>
         {% endif %}
 
-        <!-- Карточка со статистикой -->
         <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
             <div class="card-body p-4">
                 <ul class="list-group list-group-flush">
@@ -46,7 +43,7 @@
                         <input type="date" id="end" name="end" class="form-control border-2 border-color" required>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-outline-color w-100 fw-bold py-2">Показать статистику</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Показать статистику</button>
                     </div>
                 </form>
             </div>

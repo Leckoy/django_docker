@@ -16,11 +16,6 @@ from django.utils import timezone
 from datetime import date
 from django.db.models import F
 
-
-
-
-
-
 def fproducts(request):
 	products = Ingredient.objects.all()
 	return render(request, "cook/products.html", {"products": products})
@@ -218,6 +213,7 @@ def Menu_view(request):
         days_data.append(day_info)
 
     return render(request, "cook/menu.html", {"days": days_data})
+
 def mark_ready(request, order_id):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -234,6 +230,7 @@ def mark_ready(request, order_id):
             Dish.objects.filter(id=dish.id).update(weight=F('weight') - 1)
     
     return redirect('cook_orders')
+
 def cook_orders(request):
     if not request.user.is_authenticated:
         return redirect('login')
