@@ -222,6 +222,11 @@ def mark_ready(request, order_id):
         return HttpResponseForbidden("Доступ запрещён")
 
     order = get_object_or_404(Purchases, id=order_id)
+    for dish in order.menu.get_dishes():
+        if dish:
+            if Dish.objects.filter(id=dish.id).weight <= 0:
+                messages.error(request, f"Недостаточно блюда {dish.title} для выполнения заказа!")
+                return redirect('cook_orders')
     order.is_ready = True
     order.save()
     # delete from cook_dish where id = order.menu.dish1.id
