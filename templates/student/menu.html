@@ -23,8 +23,6 @@
                                     <i class="bi bi-sunrise me-1"></i>
                                 {% elif meal.name == 'Обед' %}
                                     <i class="bi bi-sun me-1"></i>
-                                {% elif meal.name == 'Ужин' %}
-                                    <i class="bi bi-moon-stars me-1"></i>
                                 {% endif %}
                                 {{ meal.name }}: <span class="text-primary">{{ meal.price }} руб.</span>
                             </h5>
@@ -34,7 +32,12 @@
                                     {% for dish in meal.menu.get_dishes %}
                                         <li class="mb-2 d-flex flex-wrap align-items-center">
                                             <span class="me-2">{{ dish.title }} ({{ dish.cost }} руб.)</span>
-                                            <a href="{% url 'comment_page' dish.id %}" class="btn btn-outline-color btn-sm me-2">Отзыв</a>
+                                            {% if meal.attended %}
+                                                <a href="{% url 'comment_page' dish.id %}" class="btn btn-outline-color btn-sm me-2">Отзыв</a>
+                                            {% else %}
+                                                <span class="text-muted">Отзыв недоступен</span>
+                                            {% endif %}
+
                                             {% if allergies %}
                                                 {% for ingr in dish.get_ingredients %}
                                                     {% if ingr in allergies %}
