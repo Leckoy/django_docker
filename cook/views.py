@@ -70,6 +70,8 @@ def CreateMenu(request: HttpRequest) -> HttpResponse:
                 messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно создано!")
             else:
                 messages.success(request, f"Меню на {chosen_date} ({food_intake}) успешно обновлено (старое затерто)!")
+        else:
+            messages.error(request, "Поля не заполнены")
                 
             return redirect('create_menu')
     else:
@@ -98,6 +100,8 @@ def IngredientUse(request: HttpRequest) -> HttpResponse:
             else:
                 ingr.amount -= count
                 ingr.save()
+
+                messages.success(request, "Данные обновились")
 
                 return redirect("ingredient") 
         else:
@@ -130,6 +134,7 @@ def IngredientOrder(request: HttpRequest) -> HttpResponse:
             new_order.cost = ingr.cost * Decimal(str(count))
             new_order.status = 0
             new_order.save()
+            messages.success(request, "Заявка успешно отправлена")
             return redirect('/cook/order/') 
         else:
             messages.error(request, "Ошибка: проверьте данные формы.")
@@ -163,6 +168,7 @@ def DishAdd(request: HttpRequest) -> HttpResponse:
             else:
                 dishh.weight += weigh
                 dishh.save()
+                messages.success(request, "Блюдо успешно добавлено")
                 return redirect('dish') 
         else:
             messages.error(request, "Ошибка: выберите блюдо из списка.")

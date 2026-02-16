@@ -12,6 +12,7 @@ from .get_state import *
 from student.models import Purchases
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib import messages
 
 # Create your views here.
 def main_page(request):
@@ -89,6 +90,7 @@ def statistic(request):
         stat[date] = get
 
     return render(request, "canadmin/statistic.html", {"statistic": stat})
+
 def ingredadd(request):
     if request.method == 'POST':
         form = IngredAddForm(request.POST, request.FILES)
@@ -98,12 +100,15 @@ def ingredadd(request):
     else:
         form = IngredAddForm()
     return render(request, 'canadmin/addingred.html', {'form': form})
+
 def ingredient_list(request):
     ingredients = Ingredient.objects.all().order_by('title')
     return render(request, 'canadmin/ingredient_list.html', {'ingredients': ingredients})
+
 def dishes_list(request):
     dishes = Dish.objects.all().order_by('title')
     return render(request, 'canadmin/dishes_list.html', {'dishes': dishes})
+
 def dishadd(request):
     if request.method == 'POST':
         form = AddNewDishForm(request.POST, request.FILES)
@@ -117,11 +122,13 @@ def dishadd(request):
                         comp = subform.save(commit=False)
                         comp.dish = dish
                         comp.save()
+                        messages.success(request, 'Блюдо успешно добавлено.')
                 return redirect('dishes_list')
     else:
         form = AddNewDishForm()
         formset = CompositionFormSet()
     return render(request, 'canadmin/adddish.html', {'form': form, 'formset': formset})
+
 def Menu_view(request):
     if not request.user.is_authenticated:
         return redirect('login')

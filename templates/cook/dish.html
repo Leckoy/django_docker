@@ -9,22 +9,10 @@
             <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
                 <div class="card-header bg-top text-white py-3">
                     <h2 class="mb-0">
-                        <i class="bi bi-clipboard-plus me-1"></i>Добавление готовых блюд в меню
+                        <i class="bi bi-pencil-square me-1"></i>Учет готовых блюд 
                     </h2>
                 </div>
             </div>
-
-    {% if messages %}
-    <div class="md-4">
-        {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show border-0">
-            <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle{% else %}bi-check-circle{% endif %} me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
     <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-5">
         <div class="card-body p-4"> 

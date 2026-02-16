@@ -1,23 +1,65 @@
-<h1>Add New Dish</h1>
+{% extends 'base/base_admin.html' %}
 
-    <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {{ form.as_p }}
+{% block main %}
+<div class="container-fluid" style="margin-top: 90px;">
+    <div class="mx-5">
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3">
+            <div class="card-header bg-top text-white py-3">
+                <h3 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>Добавить новое блюдо
+                </h3>
+            </div>
 
-    <h3>Ингредиенты</h3>
-    {{ formset.management_form }}
-    {% for subform in formset %}
-        {{ subform.non_field_errors }}
-        <div class="mb-3">
-            {{ subform.ingredient.errors }}
-            {{ subform.ingredient }}
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {% if field.errors %}
+                                <div class="text-danger small">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {{ form.as_p }}
+
+                    <hr class="border-color opacity-50 my-4">
+                    <h4 class="fw-semibold mb-3">
+                        <i class="bi bi-basket me-2"></i>Ингредиенты
+                    </h4>
+
+                    {{ formset.management_form }}
+                    {% for subform in formset %}
+                    <div class="card mb-3 border-2 border-color border-opacity-25 bg-light bg-opacity-10">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2 mb-md-0">
+                                        {{ subform.non_field_errors }}
+                                        {{ subform.ingredient.errors }}
+                                        {{ subform.ingredient }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">Вес (г)</label>
+                                        {{ subform.weight.errors }}
+                                        {{ subform.weight }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    <div class="d-grid gap-3 col-6 mx-auto mt-4">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold">
+                            <i class="bi bi-check-circle me-2"></i>Сохранить блюдо
+                        </button>
+                        <a href="{% url 'admin_main_page' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Вернуться на главную
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            {{ subform.weight.errors }}
-            {{ subform.weight }}
-        </div>
-    {% endfor %}
-
-    <button type="submit" class="btn btn-primary">Сохранить блюдо</button>
-</form>
+    </div>
+</div>
+{% endblock %}
