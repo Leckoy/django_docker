@@ -56,9 +56,11 @@ def allergy(request: HttpRequest) -> HttpResponse:
             allergy.student = student
             try:
                 allergy.save()
+                messages.success(request, "Аллергия добавлена")
                 return redirect('allergy_page')
+            
             except IntegrityError:
-                form.add_error(None, "Эта аллергия уже существует")
+                form.add_error("ingredient", "Эта аллергия уже существует")
     
     else:
         form = AddAllergyForm()
@@ -125,12 +127,8 @@ def top_up(request: HttpRequest) -> HttpResponse:
     user_role_id = request.user.role.id if request.user.role else None
     if user_role_id != 2: 
         return HttpResponseForbidden("Доступ запрещен: вы не являетесь учеником.")
-
     
-    try:
-        student = request.user.student_profile
-    except:
-        return redirect('login')
+    student = request.user.student_profile
 
     if request.method == "POST":
         form = TopUpForm(request.POST)
@@ -143,6 +141,7 @@ def top_up(request: HttpRequest) -> HttpResponse:
                 student.money += summa
                 student.save()
 
+                messages.success(request, f"Пополнение прошло успешно")
                 return redirect('main_page') 
     else:
         form = TopUpForm()
@@ -443,7 +442,7 @@ def Menu_view(request):
         },
 
         {
-            'title': 'Через 3 дня',
+            'title': 'Через 5 дней',
             'meals': [
                 {'name': 'Завтрак', 'menu':m7_breakfast, 'price': price7_breakfast},
                 {'name': 'Обед', 'menu': m7_lunch, 'price': price7_lunch},

@@ -1,68 +1,92 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Заказ ингредиентов</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-5">
+{% extends 'base/base_cook.html' %}
 
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Закупка ингредиентов на склад</h2>
-        <a href="{% url 'ingredient' %}" class="btn btn-outline-secondary btn-sm">Назад к списанию</a>
-    </div>
+{% block content %}
+<div class="container mt-5" style="padding-top: 90px;">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-top text-white py-3">
+                    <h2 class="mb-0">
+                        <i class="bi bi-bag-plus me-1"></i>Закупка ингредиентов на склад
+                    </h2>
+                </div>
+            </div>
+        
 
-    {% if messages %}
-    <div class="mt-3">
-        {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="card shadow-sm mt-4">
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ form.title.label_tag }}
-                    {{ form.title }}
-                    <datalist id="ingredients_datalist">
-                        {% for item in all_ingredients %}
-                        <option value="{{ item.title }}">
+        
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mb-4">
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">
+                            {{ form.title.label }}
+                        </label>
+                        {{ form.title }}
+                        <datalist id="ingredients_datalist">
+                            {% for item in all_ingredients %}
+                            <option value="{{ item.title }}">
                             {% endfor %}
-                    </datalist>
+                        </datalist>
+                        {% if form.title.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.amount.id_for_label }}" class="form-label fw-bold">
+                            {{ form.amount.label }}
+                        </label>
+                        {{ form.amount }}
+                        {% if form.amount.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.amount.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2">
+                        <i class="bi bi-cart-plus me-2"></i>Оформить поступление
+                    </button>
+                    <a href="{% url 'main_cook_page' %}" class="btn btn-outline-secondary w-100 mt-2"><i class="bi bi-arrow-left me-2"></i>Вернуться на главную</a>
+                </form>
+            </div>
+        </div>
+
+        
+        <div class="card border-2 border-color border-opacity-25 shadow-sm rounded-3 mt-5">
+            <div class="card-header bg-light py-3">
+                <h3 class="mb-0">
+                    <i class="bi bi-box-seam me-2"></i>Текущие остатки на складе:
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Название</th>
+                                <th><i class="bi bi-calculator me-1"></i>Количество (остаток)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in all_ingredients %}
+                            <tr>
+                                <td class="ps-4">{{ item.title }}</td>
+                                <td><strong class="text-primary">{{ item.amount }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center py-4 text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>Ингредиентов пока нет на складе.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="mb-3">
-                    {{ form.amount.label_tag }}
-                    {{ form.amount }}
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Оформить поступление</button>
-            </form>
+            </div>
         </div>
     </div>
-
-    <h4 class="mt-5">Текущее наличие на складе:</h4>
-    <table class="table table-bordered table-hover mt-3">
-        <thead class="table-light">
-            <tr>
-                <th>Ингредиент</th>
-                <th>Остаток</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in all_ingredients %}
-            <tr>
-                <td>{{ item.title }}</td>
-                <td><strong>{{ item.amount }}</strong></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}

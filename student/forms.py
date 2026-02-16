@@ -83,7 +83,8 @@ class AddAllergyForm(forms.ModelForm):
         label="Выберите аллерген",
         widget=forms.Select(attrs={'class': 'form-control'}),
         error_messages={
-        'required': 'Пожалуйста, выберите аллерген из списка.',  
+        'required': 'Пожалуйста, выберите аллерген из списка.',
+        'IntegrityError': "rrr",
     }
     )
 
