@@ -13,7 +13,8 @@ path("order/", views.IngredientOrder, name='order'),
 
 path('main/', index, name="main_cook_page"),
 
-path('menu/', Menu_view, name="menu")
+path('menu/', Menu_view, name="menu"),
+
 
 
 ]
