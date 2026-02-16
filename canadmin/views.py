@@ -10,6 +10,8 @@ from .forms import *
 from django.db.models import Sum, Count
 from .get_state import *
 from student.models import Purchases
+from datetime import timedelta
+from django.utils import timezone
 
 # Create your views here.
 def main_page(request):
@@ -120,4 +122,40 @@ def dishadd(request):
         form = AddNewDishForm()
         formset = CompositionFormSet()
     return render(request, 'canadmin/adddish.html', {'form': form, 'formset': formset})
-    
+def Menu_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    user_role_id = request.user.role.id if request.user.role else None
+    if user_role_id != 1: 
+        return HttpResponseForbidden("Доступ запрещен: вы не являетесь админом.")
+
+    now = timezone.now().date()
+
+    titles = [
+        "Вчера",
+        "Сегодня",
+        "Завтра",
+        "Послезавтра",
+        "Через 3 дня",
+        "Через 4 дня",
+        "Через 5 дней",
+    ]
+
+    days_data = []
+    for i, title in enumerate(titles, start=-1):
+        date = now + timedelta(days=i)
+        breakfast = Menu.objects.filter(date=date, food_intake="Завтрак").first()
+        lunch = Menu.objects.filter(date=date, food_intake="Обед").first()
+
+        day_info = {
+            "title": title,
+            "meals": [
+                {"name": "Завтрак", "menu": breakfast, "price": breakfast.get_total_cost() if breakfast else 0},
+                {"name": "Обед", "menu": lunch, "price": lunch.get_total_cost() if lunch else 0},
+            ],
+
+        }
+        days_data.append(day_info)
+
+    return render(request, "canadmin/menu.html", {"days": days_data})
